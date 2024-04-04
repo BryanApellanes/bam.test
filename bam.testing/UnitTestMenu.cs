@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Bam.Net;
 
 namespace Bam.Testing
 {
@@ -19,7 +20,12 @@ namespace Bam.Testing
 
         public UnitTestMenu(string name) : base(name)
         {
-            this.Selector = "ut";
+            this.Selector = name?.CaseAcronym().ToLowerInvariant() ?? "ut";
+        }
+
+        public UnitTestMenu(string name, string selector) : base(name)
+        {
+            this.Selector = selector;
         }
     }
 }
