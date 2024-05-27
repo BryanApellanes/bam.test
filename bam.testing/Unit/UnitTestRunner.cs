@@ -1,5 +1,5 @@
 ﻿using System.Reflection;
-using Bam.Net.Logging;
+using Bam.Logging;
 
 namespace Bam.Testing.Unit
 {

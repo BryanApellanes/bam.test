@@ -7,8 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
-using Bam.Net.Data.Repositories;
-using Bam.Net.Data;
+using Bam.Data.Repositories;
+using Bam.Data;
 using System.Runtime.Serialization;
 using Bam.CommandLine;
 

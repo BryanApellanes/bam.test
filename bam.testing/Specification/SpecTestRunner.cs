@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
-using Bam.Net;
-using Bam.Net.Logging;
+using Bam;
+using Bam.Logging;
 
 namespace Bam.Testing.Specification
 {

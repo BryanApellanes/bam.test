@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using Bam.Net;
+using Bam;
 
 namespace Bam.Testing
 {

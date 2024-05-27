@@ -8,9 +8,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Reflection;
-using Bam.Net.Logging;
+using Bam.Logging;
 using Bam.CommandLine;
-using Bam.Net;
+using Bam;
 using Bam.Console;
 
 namespace Bam.Testing.Integration

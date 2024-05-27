@@ -1,5 +1,5 @@
 ﻿using Bam.Console;
-using Bam.Net.CoreServices;
+using Bam.CoreServices;
 using Bam.Services;
 using System;
 using System.Collections.Generic;

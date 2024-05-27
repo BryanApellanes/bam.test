@@ -1,8 +1,8 @@
 /*
 	Copyright © Bryan Apellanes 2015  
 */
-using Bam.Net;
-using Bam.Net.CoreServices;
+using Bam;
+using Bam.CoreServices;
 using System;
 using System.Collections.Generic;
 using System.Linq;

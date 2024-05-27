@@ -8,7 +8,7 @@ using System.Text;
 using System.Reflection;
 using Bam.CommandLine;
 
-namespace Bam.Net.Testing
+namespace Bam.Testing
 {
     [Serializable]
 	[AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]

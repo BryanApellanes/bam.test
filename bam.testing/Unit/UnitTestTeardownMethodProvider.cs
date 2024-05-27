@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Bam.CommandLine;
-using Bam.Net.Testing;
+using Bam.Testing;
 
 namespace Bam.Testing.Unit
 {

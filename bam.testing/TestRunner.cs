@@ -1,7 +1,7 @@
 ﻿using Bam.CommandLine;
-using Bam.Net;
-using Bam.Net.ExceptionHandling;
-using Bam.Net.Logging;
+using Bam;
+using Bam.ExceptionHandling;
+using Bam.Logging;
 using Bam.Testing.Specification;
 using Bam.Testing.Unit;
 using System.Diagnostics;

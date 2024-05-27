@@ -1,8 +1,8 @@
 /*
 	Copyright © Bryan Apellanes 2015  
 */
-using Bam.Net.CommandLine;
-//using Bam.Net.Testing.Unit;
+using Bam.CommandLine;
+//using Bam.Testing.Unit;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -2,7 +2,7 @@
 	Copyright © Bryan Apellanes 2015  
 */
 using Bam.CommandLine;
-using Bam.Net.CoreServices;
+using Bam.CoreServices;
 
 namespace Bam.Testing.Specification
 {

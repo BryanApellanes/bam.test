@@ -1,6 +1,6 @@
 ﻿using Bam.CommandLine;
 using Bam.Console;
-using Bam.Net.Logging;
+using Bam.Logging;
 using Bam.Testing.Integration;
 using Bam.Testing.Specification;
 using Bam.Testing.Unit;

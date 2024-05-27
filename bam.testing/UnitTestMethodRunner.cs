@@ -1,4 +1,4 @@
-﻿using Bam.Net.Logging;
+﻿using Bam.Logging;
 using Bam.Testing.Unit;
 using System;
 using System.Collections.Generic;

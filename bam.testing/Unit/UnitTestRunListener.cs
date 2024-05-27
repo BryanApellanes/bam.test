@@ -1,8 +1,8 @@
 ﻿using Bam.Data.Schema;
-using Bam.Net.Data.Repositories;
-using Bam.Net.Data.Schema;
-using Bam.Net.Data.SQLite;
-using Bam.Net.Logging;
+using Bam.Data.Repositories;
+using Bam.Data.Schema;
+using Bam.Data.SQLite;
+using Bam.Logging;
 using Bam.Testing.Data;
 
 namespace Bam.Testing.Unit

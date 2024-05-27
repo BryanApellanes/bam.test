@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Bam.Net;
-using Bam.Net.Logging;
+using Bam;
+using Bam.Logging;
 using Bam.CommandLine;
 using Bam.Console;
 

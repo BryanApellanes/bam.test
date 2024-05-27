@@ -1,5 +1,5 @@
-﻿using Bam.Net;
-using Bam.Net.Logging;
+﻿using Bam;
+using Bam.Logging;
 using Bam.Testing.Data;
 using Bam.Testing.Unit;
 using System;
