@@ -1,7 +1,6 @@
 ﻿using Bam.Data.Schema;
 using Bam.Data.Repositories;
 using Bam.Data.Schema;
-using Bam.Data.SQLite;
 using Bam.Logging;
 using Bam.Testing.Data;
 
@@ -17,12 +16,12 @@ namespace Bam.Testing.Unit
         {
         }
 
-        public UnitTestRunListener(IDaoCodeWriter daoCodeWriter, IWrapperGenerator wrapperGenerator, string resultDirectory, string resultFileName)
+        /*public UnitTestRunListener(IDaoCodeWriter daoCodeWriter, IWrapperGenerator wrapperGenerator, string resultDirectory, string resultFileName)
         {
             DaoRepository = new DaoRepository(new SchemaProvider(), new DaoGenerator(daoCodeWriter), wrapperGenerator, new SQLiteDatabase(resultDirectory, resultFileName), Log.Default);
             DaoRepository.AddType(typeof(TestResult));
             DaoRepository.EnsureDaoAssemblyAndSchema();
-        }
+        }*/
 
         public IDaoRepository DaoRepository { get; set; }
 
