@@ -1,0 +1,19 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Bam.Test.Specification
+{
+    public class SpecTestMethodProvider : TestMethodProvider<SpecTestMethod>
+    {
+        public SpecTestMethodProvider() { }
+
+        public override List<SpecTestMethod> GetTests(string testGroup = null)
+        {
+            return SpecTestMethod.FromAssembly(Assembly);
+        }
+    }
+}
