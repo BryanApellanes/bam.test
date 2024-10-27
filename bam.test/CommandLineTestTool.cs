@@ -104,7 +104,7 @@ namespace Bam.Test
 
         public static void RunIntegrationTests()
         {
-            IntegrationTestRunner.RunIntegrationTests(Assembly.GetEntryAssembly());
+            IntegrationTestRunnerObsolete.RunIntegrationTests(Assembly.GetEntryAssembly());
         }
 
         public static void UnitTestMenu(Assembly assembly, CommandLine.ConsoleMenu[] otherMenus, string header)
