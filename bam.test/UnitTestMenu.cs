@@ -9,7 +9,7 @@ using Bam;
 namespace Bam.Test
 {
     /// <summary>
-    /// Attribute used to addorn a class that contains unit tests.
+    /// Attribute used to adorn a class that contains unit tests.
     /// </summary>
     public class UnitTestMenu : MenuAttribute<UnitTest>
     {
@@ -20,7 +20,7 @@ namespace Bam.Test
 
         public UnitTestMenu(string name) : base(name)
         {
-            this.Selector = name?.CaseAcronym().ToLowerInvariant() ?? "ut";
+            this.Selector = name?.PascalCase(true, " ").CaseAcronym().ToLowerInvariant() ?? "ut";
         }
 
         public UnitTestMenu(string name, string selector) : base(name)
