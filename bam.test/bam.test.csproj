@@ -10,7 +10,9 @@
   <ItemGroup>
     <ProjectReference Include="..\..\bam.base\bam.base\bam.base.csproj" />
     <ProjectReference Include="..\..\bam.commandline\bam.commandline\bam.commandline.csproj" />
+    <ProjectReference Include="..\..\bam.configuration\bam.configuration\bam.configuration.csproj" />
     <ProjectReference Include="..\..\bam.console\bam.console\bam.console.csproj" />
+    <ProjectReference Include="..\..\bam.data\bam.data\bam.data.csproj" />
     <ProjectReference Include="..\..\bam.logging\bam.logging\bam.logging.csproj" />
     <ProjectReference Include="..\..\bam.shell\bam.shell\bam.shell.csproj" />
   </ItemGroup>
