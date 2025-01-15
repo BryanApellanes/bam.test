@@ -10,7 +10,7 @@ using System.Reflection;
 using Bam.Data.Repositories;
 using Bam.Data;
 using System.Runtime.Serialization;
-using Bam.CommandLine;
+using Bam.Console;
 
 namespace Bam.Test.Data
 {

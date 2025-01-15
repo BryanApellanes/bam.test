@@ -1,4 +1,4 @@
-﻿using Bam.CommandLine;
+﻿using Bam.Console;
 using Bam;
 using Bam.ExceptionHandling;
 using Bam.Logging;
@@ -256,7 +256,7 @@ namespace Bam.Test
                                     CommandLineInterface.InvokeInSeparateAppDomain(invokeTarget, consoleMethod);
                                 }
                                 else
-                                {*/
+                                {
                 CommandLineInterface.InvokeInCurrentAppDomain(invokeTarget, consoleMethod);
                 /*}*/
             }
@@ -281,7 +281,7 @@ namespace Bam.Test
                                     CommandLineInterface.InvokeInSeparateAppDomain(invokeTarget, consoleMethod);
                                 }
                                 else
-                                {*/
+                                {
                 CommandLineInterface.InvokeInCurrentAppDomain(invokeTarget, consoleMethod);
                 /*}*/
             }
