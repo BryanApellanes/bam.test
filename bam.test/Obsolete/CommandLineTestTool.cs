@@ -1,4 +1,5 @@
-﻿using Bam.Console;
+﻿using Bam.CommandLine;
+using Bam.Console;
 using Bam.Logging;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ using Bam.Test.Unit;
 
 namespace Bam.Test
 {
-    [Obsolete("Use UnitTestMenuContainer instead")]
+    [Obsolete("This class is obsolete. Use BamContext and related classes from the namespaces Bam.Console, Bam.Shell.")]
     public class CommandLineTestTool : CommandLineTool
     {
         static CommandLineTestTool()
@@ -135,16 +136,7 @@ namespace Bam.Test
                 Exit(0);
             }
         }
-        
-        protected static void ShowActions<TConsoleMethod>(List<TConsoleMethod> actions) where TConsoleMethod : ConsoleMethod
-        {
-            for (int i = 1; i <= actions.Count; i++)
-            {
-                ConsoleMethod consoleMethod = actions[i - 1];
-                string menuOption = consoleMethod.Information;
-                System.Console.WriteLine("{0}. {1}", i, menuOption);
-            }
-        }
+
         protected internal static ITestRunner<SpecTestMethod> GetSpecTestRunner(Assembly assembly, ILogger logger)
         {
             return GetTestRunner<SpecTestMethod>(assembly, logger);

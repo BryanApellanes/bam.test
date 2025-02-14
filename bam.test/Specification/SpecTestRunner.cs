@@ -27,7 +27,7 @@ namespace Bam.Test.Specification
 
         private SpecTestContainer GetContainer(TestMethod test)
         {
-            Type type = test.Method.DeclaringType;
+            Type? type = test.Method.DeclaringType;
             if (!_specContainers.ContainsKey(type))
             {
                 _specContainers.Add(type, type.Construct<SpecTestContainer>());

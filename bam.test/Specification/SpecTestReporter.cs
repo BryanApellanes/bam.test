@@ -5,6 +5,7 @@ using System.Text;
 
 namespace Bam.Test.Specification
 {
+    // TODO: complete this idea and make generic to apply to unit and integration
     public class SpecTestReporter
     {
         readonly Queue<LogMessage> _logMessages;

@@ -26,7 +26,7 @@ namespace Bam.Test.Specification
         {
             string message = string.Format(format, args);
             message = $"{message}\r\n {ex.GetMessageAndStackTrace()}";
-            CommandLineInterface.OutLine(message, ConsoleColor.DarkMagenta);
+            Message.PrintLine(message, ConsoleColor.DarkMagenta);
             return base.AddErrorMessage(format, ex, args);
         }
     }

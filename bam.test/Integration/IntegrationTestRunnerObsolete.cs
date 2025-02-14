@@ -26,7 +26,7 @@ namespace Bam.Test.Integration
         /// <summary>
         /// Event that fires when a test passes.
         /// </summary>
-        public static event EventHandler<CommandLine.ConsoleMethod> IntegrationTestPassed;
+        public static event EventHandler<ConsoleMethod> IntegrationTestPassed;
 
         public static void RunIntegrationTests(FileInfo file, EventHandler<Exception> onFailed = null)
         {
@@ -73,7 +73,7 @@ namespace Bam.Test.Integration
                     Pass(description);
                     try
                     {
-                        IntegrationTestPassed?.Invoke(null, new CommandLine.ConsoleMethod(testMethod));
+                        IntegrationTestPassed?.Invoke(null, new ConsoleMethod(testMethod));
                     }
                     catch (Exception ex)
                     {

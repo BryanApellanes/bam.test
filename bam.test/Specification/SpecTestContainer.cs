@@ -3,10 +3,11 @@
 */
 using Bam.CommandLine;
 using Bam.CoreServices;
+using Bam.Logging;
 
 namespace Bam.Test.Specification
 {
-    public abstract class SpecTestContainer : CommandLineTool
+    public abstract class SpecTestContainer //: CommandLineTool
     {
         Dictionary<string, object> _features;
 
@@ -30,6 +31,8 @@ namespace Bam.Test.Specification
         public virtual void Setup() { }
         public virtual void TearDown() { }
 
+        public virtual ILogger Logger { get; set; }
+        
         public void RunSpecTest(SpecTestContainer container, SpecTestMethod testMethod)
         {
             testMethod.Provider = container;

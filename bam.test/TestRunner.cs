@@ -25,7 +25,7 @@ namespace Bam.Test
         }
 
         readonly Lazy<List<TTestMethod>> _tests;
-        public TestRunner(Assembly assembly, TestMethodProvider<TTestMethod> testMethodProvider, ILogger logger = null)
+        public TestRunner(Assembly assembly, TestMethodProvider<TTestMethod> testMethodProvider, ILogger? logger = null)
         {
             Assembly = assembly;
             TestMethodProvider = testMethodProvider;
