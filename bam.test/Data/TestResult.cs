@@ -1,15 +1,9 @@
 /*
 	Copyright © Bryan Apellanes 2015  
 */
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 using System.Reflection;
 using Bam.Data.Repositories;
-using Bam.Data;
-using System.Runtime.Serialization;
 using Bam.Console;
 
 namespace Bam.Test.Data

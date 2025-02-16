@@ -1,16 +1,12 @@
 /*
 	Copyright © Bryan Apellanes 2015  
 */
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Bam.Test
 {
     /// <summary>
     /// Convenience entry point into creating and initializing the 
-    /// SetupContext for a test.
+    /// TestCaseSetup for a test.
     /// </summary>
     public static class After
     {
@@ -20,11 +16,11 @@ namespace Bam.Test
         /// </summary>
         /// <param name="setup"></param>
         /// <returns></returns>
-        public static SetupContext Setup(Action<SetupContext> setup)
+        public static TestCaseRegistry Setup(Action<TestCaseRegistry> setup)
         {
-            SetupContext setupInstance = new SetupContext();
-            setup(setupInstance);
-            return setupInstance;
+            TestCaseRegistry testCaseRegistryInstance = new TestCaseRegistry();
+            setup(testCaseRegistryInstance);
+            return testCaseRegistryInstance;
         }
     }
 }

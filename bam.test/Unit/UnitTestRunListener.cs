@@ -1,7 +1,4 @@
-﻿using Bam.Data.Schema;
-using Bam.Data.Repositories;
-using Bam.Data.Schema;
-using Bam.Logging;
+﻿using Bam.Data.Repositories;
 using Bam.Test.Data;
 
 namespace Bam.Test.Unit
@@ -15,26 +12,18 @@ namespace Bam.Test.Unit
         public UnitTestRunListener()
         {
         }
-
-        /*public UnitTestRunListener(IDaoCodeWriter daoCodeWriter, IWrapperGenerator wrapperGenerator, string resultDirectory, string resultFileName)
-        {
-            DaoRepository = new DaoRepository(new SchemaProvider(), new DaoGenerator(daoCodeWriter), wrapperGenerator, new SQLiteDatabase(resultDirectory, resultFileName), Log.Default);
-            DaoRepository.AddType(typeof(TestResult));
-            DaoRepository.EnsureDaoAssemblyAndSchema();
-        }*/
-
-        public IDaoRepository DaoRepository { get; set; }
+        public IRepository Repository { get; set; }
 
         public override void TestFailed(object sender, TestExceptionEventArgs args)
         {
             TestResult result = new TestResult(args);
-            DaoRepository.Save(result);
+            Repository.Save(result);
         }
 
         public override void TestPassed(object sender, TestEventArgs<UnitTestMethod> args)
         {
             TestResult result = new TestResult(args.Test);
-            DaoRepository.Save(result);
+            Repository.Save(result);
         }
     }
 }

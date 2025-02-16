@@ -1,11 +1,6 @@
 /*
 	Copyright © Bryan Apellanes 2015  
 */
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Reflection;
 
 namespace Bam.Test
 {
@@ -21,7 +16,7 @@ namespace Bam.Test
         /// <param name="actionDescription"></param>
         /// <param name="test"></param>
         /// <returns></returns>
-        public static TestContext<T> A<T>(string actionDescription, Func<T, object> test) where T : new()
+        public static TestCase<T> A<T>(string actionDescription, Func<T, object> test) where T : new()
         {
             return A(actionDescription, new T(), test);
         }
@@ -34,11 +29,11 @@ namespace Bam.Test
         /// <param name="objectUnderTest"></param>
         /// <param name="test"></param>
         /// <returns></returns>
-        public static TestContext<T> A<T>(string actionDescription, T objectUnderTest, Func<T, object> test)
+        public static TestCase<T> A<T>(string actionDescription, T objectUnderTest, Func<T, object> test)
         {
-            SetupContext setupContext = new SetupContext();
-            setupContext.Set(objectUnderTest);
-            return new TestContext<T>(setupContext, SetupContext.GetActionDescription<T>(actionDescription), test);
+            TestCaseRegistry testCaseRegistry = new TestCaseRegistry();
+            testCaseRegistry.Set(objectUnderTest);
+            return new TestCase<T>(testCaseRegistry, TestCaseRegistry.GetActionDescription<T>(actionDescription), test);
         }
 
         /// <summary>
@@ -49,7 +44,7 @@ namespace Bam.Test
         /// <param name="actionDescription"></param>
         /// <param name="test"></param>
         /// <returns></returns>
-        public static TestContext<T> A<T>(string actionDescription, Action<T> test) where T : new()
+        public static TestCase<T> A<T>(string actionDescription, Action<T> test) where T : new()
         {
             return A(actionDescription, new T(), test);
         }
@@ -61,7 +56,7 @@ namespace Bam.Test
         /// <param name="actionDescription"></param>
         /// <param name="test"></param>
         /// <returns></returns>
-        public static TestContext<T> A<T>(string actionDescription, Action<T, SetupContext> test) where T : new()
+        public static TestCase<T> A<T>(string actionDescription, Action<T, TestCaseRegistry> test) where T : new()
         {
             return A(actionDescription, new T(), test);
         }
@@ -75,14 +70,14 @@ namespace Bam.Test
         /// <param name="objectUnderTest">The object instance being tested</param>
         /// <param name="test">the test delegate</param>
         /// <returns>Context</returns>
-        public static TestContext<T> A<T>(string actionDescription, T objectUnderTest, Action<T> test)
+        public static TestCase<T> A<T>(string actionDescription, T objectUnderTest, Action<T> test)
         {
-            SetupContext setupContext = new SetupContext();
-            setupContext.Set(objectUnderTest);
-            return new TestContext<T>(setupContext, SetupContext.GetActionDescription<T>(actionDescription), test);
+            TestCaseRegistry testCaseRegistry = new TestCaseRegistry();
+            testCaseRegistry.Set(objectUnderTest);
+            return new TestCase<T>(testCaseRegistry, TestCaseRegistry.GetActionDescription<T>(actionDescription), test);
         }
         /// <summary>
-        /// Prepares the test Context with an empty SetupContext setting the object under test
+        /// Prepares the TestCase with an empty TestCaseRegistry setting the object under test
         /// to the specified objectUnderTest
         /// </summary>
         /// <typeparam name="T">The type of the object under test.</typeparam>
@@ -90,11 +85,11 @@ namespace Bam.Test
         /// <param name="objectUnderTest">The object instance being tested</param>
         /// <param name="test">the test delegate</param>
         /// <returns>Context</returns>
-        public static TestContext<T> A<T>(string actionDescription, T objectUnderTest, Action<T, SetupContext> test)
+        public static TestCase<T> A<T>(string actionDescription, T objectUnderTest, Action<T, TestCaseRegistry> test)
         {
-            SetupContext setupContext = new SetupContext();
-            setupContext.Set(objectUnderTest);
-            return new TestContext<T>(setupContext, SetupContext.GetActionDescription<T>(actionDescription), test);
+            TestCaseRegistry testCaseRegistry = new TestCaseRegistry();
+            testCaseRegistry.Set(objectUnderTest);
+            return new TestCase<T>(testCaseRegistry, TestCaseRegistry.GetActionDescription<T>(actionDescription), test);
         }
     }
 }

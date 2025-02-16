@@ -1,12 +1,6 @@
 /*
 	Copyright © Bryan Apellanes 2015  
 */
-using Bam;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
 
 namespace Bam.Test
 {
@@ -15,15 +9,15 @@ namespace Bam.Test
     /// </summary>
     public class Because
     {
-        readonly SetupContext _setupContext;
+        readonly TestCaseRegistry _testCaseRegistry;
         readonly List<Assertion> _assertions;
-        internal Because(string testDescription, SetupContext setupContext)
+        internal Because(string testDescription, TestCaseRegistry testCaseRegistry)
         {
             TestDescription = testDescription;
             _assertions = new List<Assertion>();
-            _setupContext = setupContext;
+            _testCaseRegistry = testCaseRegistry;
         }
-
+        
         /// <summary>
         /// Gets the description of the current test being run
         /// </summary>
@@ -36,7 +30,7 @@ namespace Bam.Test
         /// <summary>
         /// Gets the SetupContext instance for the current test.
         /// </summary>
-        public SetupContext SetupContext => _setupContext;
+        public TestCaseRegistry TestCaseRegistry => _testCaseRegistry;
 
         /// <summary>
         /// Gets the object under test from the underlying SetupContext.
@@ -45,9 +39,10 @@ namespace Bam.Test
         /// <returns></returns>
         public T ObjectUnderTest<T>()
         {
-            return (T)_setupContext.ObjectUnderTest;
+            return (T)_testCaseRegistry.ObjectUnderTest;
         }
 
+        
         /// <summary>
         /// Gets a value indicating whether the current test has passed.
         /// </summary>
@@ -56,13 +51,18 @@ namespace Bam.Test
              where item.Passed == false
              select item).FirstOrDefault() == null;
 
+        public void ItsTrue(string descriptionOfTrueAssertion, Func<bool> assertion, string? failureMessage = null)
+        {
+            ItsTrue(descriptionOfTrueAssertion, assertion(), failureMessage);
+        }
+        
         /// <summary>
         /// Asserts that the specified value is true
         /// </summary>
         /// <param name="descriptionOfTrueAssertion">A description of the true value.  Read as:  ItsTrue "Michael Jordan is the best of all time"</param>
         /// <param name="shouldBeTrue"></param>
         /// <param name="failureMessage"></param>
-        public void ItsTrue(string descriptionOfTrueAssertion, bool shouldBeTrue, string failureMessage = "")
+        public void ItsTrue(string descriptionOfTrueAssertion, bool shouldBeTrue, string? failureMessage = null)
         {
             _assertions.Add(
                 new Assertion
@@ -73,15 +73,19 @@ namespace Bam.Test
                 });
         }
 
-        public void ItsTrue(string descriptionOfTrueAssertion, Action doesntThrow, string failureMessage = "")
+        public void ItsTrue(string descriptionOfTrueAssertion, Action doesntThrow, string? failureMessage = null)
         {
             _assertions.Add(
                 new Assertion
                 {
-                    Passed = doesntThrow.Try(),
+                    Passed = doesntThrow.Try(out Exception? ex),
                     SuccessMessage = descriptionOfTrueAssertion,
                     FailureMessage = failureMessage
                 });
+            if (ex != null)
+            {
+                ExceptionWasThrown(ex);
+            }
         }
 
         /// <summary>
@@ -90,7 +94,7 @@ namespace Bam.Test
         /// <param name="descriptionOfFalseAssertion">A description of the false value.  Read as: ItsFalse "John Stockton was the number one point guard of all time (Magic Johnson was, John Stockton was second)" </param>
         /// <param name="shouldBeFalse">A value that should evaluate to false.</param>
         /// <param name="failureMessage">The message to display if the `shouldBeFalse` value is actually `true`.</param>
-        public void ItsFalse(string descriptionOfFalseAssertion, bool shouldBeFalse, string failureMessage = "")
+        public void ItsFalse(string descriptionOfFalseAssertion, bool shouldBeFalse, string? failureMessage = null)
         {
             _assertions.Add(
                 new Assertion
@@ -101,13 +105,57 @@ namespace Bam.Test
                 });
         }
 
+        private ResultContext? _theResult;
+        public ResultContext TheResult
+        {
+            get
+            {
+                if (_theResult == null)
+                {
+                    _theResult = new ResultContext(this, Result);
+                }
+                return _theResult;
+            }
+        }
+
+        public void TheObjectUnderTestAs<T>(string truthStatementAboutTheObjectUnderTest, Func<T?, bool?> assertAction,
+            string? failureMessage = null)
+        {
+            _assertions.Add(new Assertion
+            {
+                Passed = assertAction(ObjectUnderTest<T>()) == true,
+                SuccessMessage = $"the object under test {truthStatementAboutTheObjectUnderTest}",
+                FailureMessage = failureMessage ?? $"{truthStatementAboutTheObjectUnderTest} was FALSE"
+            });
+        }
+        
+        /// <summary>
+        /// Provides the result to an assertion function and records the resulting assertion.
+        /// </summary>
+        /// <param name="truthStatementAboutTheResult"></param>
+        /// <param name="assertAction"></param>
+        /// <param name="failureMessage"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <remarks>
+        /// Usage: because.TheResultAs&lt;int&gt;("is greater than zero", (result) => result > 0);
+        /// </remarks>
+        public void TheResultAs<T>(string truthStatementAboutTheResult, Func<T?, bool?> assertAction, string? failureMessage = null) where T: class
+        {
+            _assertions.Add(new Assertion
+            {
+                Passed = assertAction(TheResult.As<T>()) == true,
+                SuccessMessage = $"the result {truthStatementAboutTheResult}",
+                FailureMessage = failureMessage ?? $"{truthStatementAboutTheResult} was FALSE"
+            });
+        }
+        
         /// <summary>
         /// Asserts that the type of the result of the test Function 
         /// is the same as the type specified by generic type T.  Only valid
         /// if the test method returned a value.
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        public void ResultIs<T>()
+        public void ResultIsOfType<T>()
         {
             Type type = typeof(T);
             _assertions.Add(
@@ -115,10 +163,21 @@ namespace Bam.Test
                 {
                     Passed = Result != null && Result.GetType() == typeof(T),
                     SuccessMessage = $"result is of type {type.Name}",
-                    FailureMessage = $"result is NOT of type {type.Name}"
+                    FailureMessage = $"result is NOT of type {type.Name}, but was of type {Result?.GetType().Name}"
                 });
         }
 
+        public void ResultIs<T>()
+        {
+            _assertions.Add(
+                new Assertion
+                {
+                    Passed = Result != null && Result is T,
+                    SuccessMessage = $"Result is {typeof(T).Name}",
+                    FailureMessage = $"Result is NOT {typeof(T).Name}"
+                });
+        }
+        
         /// <summary>
         /// Asserts that the result of the test function
         /// is equal to the specified object using the .Equals 
@@ -142,7 +201,7 @@ namespace Bam.Test
         /// the equality comparison operator ==
         /// </summary>
         /// <param name="obj"></param>
-        public void ResultIsSameAs(object obj)
+        public void ResultEqualsEquals(object obj)
         {
             _assertions.Add(
                 new Assertion
@@ -239,15 +298,15 @@ namespace Bam.Test
                 if (!_testIsDone)
                 {
                     _testIsDone = true;
-                    _setupContext.Get<IBecauseWriter>().Write(this);
+                    _testCaseRegistry.Get<IBecauseWriter>().Write(this);
                 }
                 return this;
             }
         }
 
-        internal Because CleanUp(Action<SetupContext> cleanup)
+        internal Because CleanUp(Action<TestCaseRegistry> cleanup)
         {
-            cleanup(_setupContext);
+            cleanup(_testCaseRegistry);
             return this;
         }
 

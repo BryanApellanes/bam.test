@@ -1,7 +1,5 @@
-﻿using Bam.CoreServices;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Bam.DependencyInjection;
+using Bam.Services;
 
 namespace Bam.Test.Specification
 {

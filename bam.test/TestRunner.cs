@@ -1,5 +1,4 @@
 ﻿using Bam.Console;
-using Bam;
 using Bam.ExceptionHandling;
 using Bam.Logging;
 using System.Diagnostics;

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Bam.Test
+﻿namespace Bam.Test
 {
     public interface ITestRunListener<TTestMethod> : ITestRunListener where TTestMethod : TestMethod
     {
@@ -17,7 +15,7 @@ namespace Bam.Test
 {
     public interface ITestRunListener
     {
-        string Tag { get; set; }
+        string? Tag { get; set; }
         void TestPassed(object sender, EventArgs e);
         void TestFailed(object sender, EventArgs e);
         void TestFailed(object sender, TestExceptionEventArgs args);

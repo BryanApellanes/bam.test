@@ -1,13 +1,6 @@
 /*
 	Copyright © Bryan Apellanes 2015  
 */
-using Bam;
-using Bam.CoreServices;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Bam.Test.Specification
 {
@@ -58,7 +51,7 @@ namespace Bam.Test.Specification
 
         /// <summary>
         /// Gets or sets the specification container where the feature is defined.  This property is
-        /// set by the container when the feature is setup.
+        /// set by the container when the feature is set up.
         /// </summary>
         /// <value>
         /// The specification container.

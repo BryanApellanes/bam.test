@@ -1,31 +1,28 @@
 /*
 	Copyright © Bryan Apellanes 2015  
 */
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Bam.Test
 {
     /// <summary>
-    /// The context specific to a single set of tests.  Tracks
+    /// The context specific to a single test.  Tracks
     /// the SetupContext, the test delegate and the assertions
     /// made during the verification phase of the test.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class TestContext<T>
+    public class TestCase<T>
     {
-        readonly SetupContext _setupContext;
+        readonly TestCaseRegistry _testCaseRegistry;
         readonly Because _because;
         readonly Action<T> _testMethod;
-        readonly Action<T, SetupContext> _altTestMethod;
+        readonly Action<T, TestCaseRegistry> _altTestMethod;
         readonly Func<T, object> _outputAction;
 
-        internal TestContext(SetupContext setupContext, string testDescription)
+        internal TestCase(TestCaseRegistry testCaseRegistry, string testDescription)
         {
-            _setupContext = setupContext;
-            _because = new Because(testDescription, setupContext);
+            Description = testDescription;
+            _testCaseRegistry = testCaseRegistry;
+            _because = new Because(testDescription, testCaseRegistry);
             _testMethod = (o) => { };
             _altTestMethod = (o, c) => { };
             _outputAction = (o) => o;
@@ -35,47 +32,48 @@ namespace Bam.Test
         /// Creates a new test Context instance using the specified setupContext and 
         /// test description.
         /// </summary>
-        /// <param name="setupContext">The setup or initialization context used for this
+        /// <param name="testCaseRegistry">The setup or initialization context used for this
         /// test.</param>
         /// <param name="testDescription">The description of the current test.</param>
         /// <param name="testMethod">The delegate containing the test actions</param>
-        public TestContext(SetupContext setupContext, string testDescription, Action<T> testMethod)
-            : this(setupContext, testDescription)
+        public TestCase(TestCaseRegistry testCaseRegistry, string testDescription, Action<T> testMethod)
+            : this(testCaseRegistry, testDescription)
         {
             _testMethod = testMethod;
         }
 
-        public TestContext(SetupContext setupContext, string testDescription, Action<T, SetupContext> altTestMethod)
-            : this(setupContext, testDescription)
+        public TestCase(TestCaseRegistry testCaseRegistry, string testDescription, Action<T, TestCaseRegistry> altTestMethod)
+            : this(testCaseRegistry, testDescription)
         {
             _altTestMethod = altTestMethod;
         }
 
         /// <summary>
-        /// Creates a new test Context instance using the specified setupContext and 
+        /// Creates a new test case instance using the specified setupContext and 
         /// test description.
         /// </summary>
-        /// <param name="setupContext">The setup or initialization context used for this
+        /// <param name="testCaseRegistry">The setup or initialization context used for this
         /// test.</param>
         /// <param name="testDescription">The description of the current test.</param>
         /// <param name="outputAction">The delegate containing the test which returns a value
         /// that can be validated during the verification phase of the test.</param>
-        public TestContext(SetupContext setupContext, string testDescription, Func<T, object> outputAction)
-            : this(setupContext, testDescription)
+        public TestCase(TestCaseRegistry testCaseRegistry, string testDescription, Func<T, object> outputAction)
+            : this(testCaseRegistry, testDescription)
         {
             _outputAction = outputAction;
         }
 
+        public string Description { get; init; }
         /// <summary>
-        /// Causes the test to run, same as It.
+        /// Causes the test case to run, same as It.
         /// </summary>
-        public TestContext<T> TheTest => It;
+        public TestCase<T> TheTest => It;
 
         bool run;
         /// <summary>
-        /// Causes the test to run, same as TheTest.
+        /// Causes the test case to run, same as TheTest.
         /// </summary>
-        public TestContext<T> It
+        public TestCase<T> It
         {
             get
             {
@@ -84,11 +82,11 @@ namespace Bam.Test
                     run = true;
                     try
                     {
-                        T objectUnderTest = _setupContext.Get<T>();
+                        T objectUnderTest = _testCaseRegistry.Get<T>();
                         _testMethod(objectUnderTest);
-                        _altTestMethod(objectUnderTest, _setupContext);
+                        _altTestMethod(objectUnderTest, _testCaseRegistry);
                         _because.Result = _outputAction(objectUnderTest);
-                        _setupContext.ObjectUnderTest = objectUnderTest;
+                        _testCaseRegistry.ObjectUnderTest = objectUnderTest;
                     }
                     catch (Exception ex)
                     {
@@ -102,11 +100,11 @@ namespace Bam.Test
         /// <summary>
         /// The entry point into test validation.  Calls the specified
         /// actionToAssertResults passing it the Because object of the 
-        /// current test Context.
+        /// current test case.
         /// </summary>
         /// <param name="actionToAssertResults"></param>
         /// <returns></returns>
-        public TestContext<T> ShouldPass(Action<Because> actionToAssertResults)
+        public TestCase<T> ShouldPass(Action<Because> actionToAssertResults)
         {
             actionToAssertResults(_because);
             return this;
@@ -119,11 +117,11 @@ namespace Bam.Test
         /// </summary>
         /// <param name="actionToAssertResults"></param>
         /// <returns></returns>
-        public TestContext<T> ShouldPass(Action<Because, AssertionProvider<T>> actionToAssertResults)
+        public TestCase<T> ShouldPass(Action<Because, AssertionProvider<T>> actionToAssertResults)
         {
             try
             {
-                actionToAssertResults(_because, new AssertionProvider<T>(_because, (T)_setupContext.ObjectUnderTest, "Object Under Test"));
+                actionToAssertResults(_because, new AssertionProvider<T>(_because, (T)_testCaseRegistry.ObjectUnderTest, "Object Under Test"));
             }
             catch (Exception ex)
             {
@@ -132,11 +130,11 @@ namespace Bam.Test
             return this;
         }
 
-        public TestContext<T> ShouldPass<TResult>(Action<Because, AssertionProvider<T>, TResult> actionToAssertResults)
+        public TestCase<T> ShouldPass<TResult>(Action<Because, AssertionProvider<T>, TResult> actionToAssertResults)
         {
             try
             {
-                actionToAssertResults(_because, new AssertionProvider<T>(_because, (T)_setupContext.ObjectUnderTest, "Object Under Test"), _because.ResultAs<TResult>());
+                actionToAssertResults(_because, new AssertionProvider<T>(_because, (T)_testCaseRegistry.ObjectUnderTest, "Object Under Test"), _because.ResultAs<TResult>());
             }
             catch (Exception ex)
             {
@@ -162,7 +160,7 @@ namespace Bam.Test
         /// </summary>
         /// <param name="cleanup"></param>
         /// <returns></returns>
-        public Because SoBeHappy(Action<SetupContext> cleanup)
+        public Because SoBeHappy(Action<TestCaseRegistry> cleanup)
         {
             return Cleanup(cleanup);
         }
@@ -174,7 +172,7 @@ namespace Bam.Test
         /// </summary>
         /// <param name="cleanup"></param>
         /// <returns></returns>
-        public Because Cleanup(Action<SetupContext> cleanup)
+        public Because Cleanup(Action<TestCaseRegistry> cleanup)
         {
             return _because.TestIsDone.CleanUp(cleanup);
         }

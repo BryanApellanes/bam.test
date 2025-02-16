@@ -1,12 +1,8 @@
 /*
 	Copyright © Bryan Apellanes 2015  
 */
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Reflection;
-using Bam.CommandLine;
+
+using Bam.Console;
 
 namespace Bam.Test.Unit
 {
@@ -16,7 +12,7 @@ namespace Bam.Test.Unit
     [Serializable]
     [Obsolete("Use UnitTest instead")]
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
-    public class UnitTestAttribute : ConsoleActionAttribute
+    public class UnitTestAttribute : ConsoleCommandAttribute
     {
         public UnitTestAttribute()
             : base()

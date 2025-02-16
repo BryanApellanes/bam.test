@@ -1,11 +1,4 @@
-﻿using Bam.CommandLine;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Reflection;
-using Bam;
+﻿using System.Reflection;
 
 namespace Bam.Test.Specification
 {
@@ -30,7 +23,7 @@ namespace Bam.Test.Specification
         {
             List<SpecTestMethod> tests = new List<SpecTestMethod>();
             tests.AddRange(FromAssembly<SpecTestMethod>(assembly, typeof(SpecTestAttribute)));
-            tests.Sort((l, r) => l.Information.CompareTo(r.Information));
+            tests.Sort((l, r) => String.Compare(l.Information, r.Information, StringComparison.Ordinal));
             return tests;
         }
 

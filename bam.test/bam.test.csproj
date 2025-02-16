@@ -4,7 +4,6 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <RootNamespace>bam.testing</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -20,6 +19,16 @@
 
   <ItemGroup>
     <Compile Remove="CommandLineTestTool.cs" />
+    <Compile Remove="Integration\IntegrationTestRunnerObsolete.cs" />
+    <Compile Remove="Obsolete\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Remove="Obsolete\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Obsolete\**" />
   </ItemGroup>
 
 </Project>

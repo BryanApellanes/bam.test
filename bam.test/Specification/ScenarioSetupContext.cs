@@ -2,11 +2,6 @@
 	Copyright © Bryan Apellanes 2015  
 */
 using Bam.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Bam.Test.Specification
 {
@@ -86,7 +81,7 @@ namespace Bam.Test.Specification
         public bool Execute()
         {
             FireEvent(ScenarioExecuting, new SpecTestEventArgs { ScenarioSetupContext = this, TestAction = TestAction });
-            SpecTestReporter reporter = SpecTestContainer.GetReporter();
+            TestReporter reporter = SpecTestContainer.GetReporter();
             if (!TrySetup())
             {
                 reporter.AddWarningMessage("Failed to setup scenario: ({0})", Description);

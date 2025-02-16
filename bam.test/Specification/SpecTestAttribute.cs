@@ -1,13 +1,13 @@
 /*
 	Copyright © Bryan Apellanes 2015  
 */
-using Bam.CommandLine;
+using Bam.Console;
 
 namespace Bam.Test.Specification
 {
 
     [AttributeUsage(AttributeTargets.Method)]
-    public class SpecTestAttribute : ConsoleActionAttribute
+    public class SpecTestAttribute : ConsoleCommandAttribute
     {
     }
 }

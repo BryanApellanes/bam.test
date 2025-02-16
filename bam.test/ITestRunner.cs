@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Bam.Test
+﻿namespace Bam.Test
 {
     public interface ITestRunner<TTestMethod> where TTestMethod : TestMethod
     {

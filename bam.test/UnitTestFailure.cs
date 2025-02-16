@@ -1,5 +1,3 @@
-using System;
-
 namespace Bam.Test
 {
     public class UnitTestFailure

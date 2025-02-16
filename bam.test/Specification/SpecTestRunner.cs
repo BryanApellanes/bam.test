@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using Bam;
 using Bam.Logging;
 
 namespace Bam.Test.Specification

@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\bam.base\bam.base\bam.base.csproj" />
+      <ProjectReference Include="..\..\bam.generators\bam.generators\bam.generators.csproj" />
+      <ProjectReference Include="..\bam.test\bam.test.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Integration\" />
+      <Folder Include="Specification\" />
+    </ItemGroup>
+
+</Project>

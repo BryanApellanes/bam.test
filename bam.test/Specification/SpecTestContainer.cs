@@ -1,13 +1,14 @@
 /*
 	Copyright © Bryan Apellanes 2015  
 */
-using Bam.CommandLine;
-using Bam.CoreServices;
+
+using Bam.DependencyInjection;
 using Bam.Logging;
+using Bam.Services;
 
 namespace Bam.Test.Specification
 {
-    public abstract class SpecTestContainer //: CommandLineTool
+    public abstract class SpecTestContainer 
     {
         Dictionary<string, object> _features;
 
@@ -17,13 +18,13 @@ namespace Bam.Test.Specification
             ScenarioContext = new ScenarioContext();
             SpecTestRegistry = new ServiceRegistry();
             _features = new Dictionary<string, object>();
-            SpecTestResults = new SpecTestReporter();
+            //TestResults = new TestReporter();
         }
 
         public ServiceRegistry SpecTestRegistry { get; set; }
         internal FeatureContext FeatureContext { get; set; }
         internal ScenarioContext ScenarioContext { get; set; }
-        internal SpecTestReporter SpecTestResults;
+        internal TestReporter TestResults;
 
         FeatureContextSetup _currentFeatureSetupContext;
         ScenarioSetupContext _currentScenarioContextSetup;
@@ -88,13 +89,14 @@ namespace Bam.Test.Specification
         /// Gets the reporter from the SpecTestRegistry if it exists, otherwise returns a new SpecTestReporter.
         /// </summary>
         /// <returns></returns>
-        public SpecTestReporter GetReporter()
+        public TestReporter? GetReporter()
         {
-            if (SpecTestRegistry.TryGet(out SpecTestReporter reporter))
+            if (SpecTestRegistry.TryGet(out TestReporter reporter))
             {
                 return reporter;
             }
-            return new SpecTestReporter();
+
+            return null;
         }
     }
 }

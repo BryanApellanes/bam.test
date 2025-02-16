@@ -1,10 +1,6 @@
 /*
 	Copyright © Bryan Apellanes 2015  
 */
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Bam.Test
 {
@@ -24,11 +20,11 @@ namespace Bam.Test
         /// </summary>
         public bool Passed { get; set; }
 
-        string _failureMessage;
+        string? _failureMessage;
         /// <summary>
         /// Gets or sets the partial failure message to display if the assertion fails.
         /// </summary>
-        public string FailureMessage
+        public string? FailureMessage
         {
             get
             {

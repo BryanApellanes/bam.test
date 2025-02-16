@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 namespace Bam.Test
 {
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]

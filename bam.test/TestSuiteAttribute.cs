@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Bam.Test
+﻿namespace Bam.Test
 {
     /// <summary>
     /// An attribute used to logically group tests together
