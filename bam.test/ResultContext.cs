@@ -1,11 +1,18 @@
 namespace Bam.Test;
 
+/// <summary>
+/// Provides a context for assertions about the return value of a test.
+/// </summary>
+/// <typeparam name="T"></typeparam>
 public class ResultContext<T> : ResultContext
 {
     public ResultContext(Because because, object result) : base(because, result)
     {
     }
 
+    /// <summary>
+    /// The return value of the test.
+    /// </summary>
     public new T Result
     {
         get => (T)base.Result;
@@ -13,6 +20,9 @@ public class ResultContext<T> : ResultContext
     }
 }
 
+/// <summary>
+/// Provides a context for assertions about the return value of a test.
+/// </summary>
 public class ResultContext
 {
     public ResultContext(Because because, object result)
@@ -20,9 +30,21 @@ public class ResultContext
         Because = because;
         Result = result;
     }
+    
+    /// <summary>
+    /// Gets or sets the Because object used for tracking assertions.
+    /// </summary>
     protected Because Because { get; set; }
+    
+    /// <summary>
+    /// Gets or sets the return value of the test.
+    /// </summary>
     public object Result { get; set; }
 
+    /// <summary>
+    /// Asserts that the result is not null.
+    /// </summary>
+    /// <returns></returns>
     public ResultContext IsNotNull()
     {
         this.Because.ItsTrue("the result is not null", Result != null, "the result IS null");
@@ -52,7 +74,13 @@ public class ResultContext
         this.Because.ResultEqualsEquals(value);
         return this;
     }
-
+    
+    public ResultContext As<T>(string truthStatementAboutTheResult, Func<T?, bool?> assertAction, string? failureMessage = null) where T: class
+    {
+        this.Because.TheResultAs<T>(truthStatementAboutTheResult, assertAction, failureMessage);
+        return this;
+    }
+    
     public T? As<T>() where T : class
     {
         return this.Result as T;

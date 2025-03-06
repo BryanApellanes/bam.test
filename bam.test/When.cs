@@ -13,27 +13,27 @@ namespace Bam.Test
         /// 
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="actionDescription"></param>
+        /// <param name="testCaseDescription"></param>
         /// <param name="test"></param>
         /// <returns></returns>
-        public static TestCase<T> A<T>(string actionDescription, Func<T, object> test) where T : new()
+        public static TestCase<T> A<T>(string testCaseDescription, Func<T, object> test) where T : new()
         {
-            return A(actionDescription, new T(), test);
+            return A(testCaseDescription, new T(), test);
         }
 
         /// <summary>
         /// 
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="actionDescription"></param>
+        /// <param name="testCaseDescription"></param>
         /// <param name="objectUnderTest"></param>
         /// <param name="test"></param>
         /// <returns></returns>
-        public static TestCase<T> A<T>(string actionDescription, T objectUnderTest, Func<T, object> test)
+        public static TestCase<T> A<T>(string testCaseDescription, T objectUnderTest, Func<T, object> test)
         {
             TestCaseRegistry testCaseRegistry = new TestCaseRegistry();
             testCaseRegistry.Set(objectUnderTest);
-            return new TestCase<T>(testCaseRegistry, TestCaseRegistry.GetActionDescription<T>(actionDescription), test);
+            return new TestCase<T>(testCaseRegistry, TestCaseRegistry.GetActionDescription<T>(testCaseDescription), test);
         }
 
         /// <summary>
@@ -41,24 +41,24 @@ namespace Bam.Test
         /// object under test to an instance of T using the default constructor of type T.
         /// </summary>
         /// <typeparam name="T">The type of the </typeparam>
-        /// <param name="actionDescription"></param>
+        /// <param name="testCaseDescription"></param>
         /// <param name="test"></param>
         /// <returns></returns>
-        public static TestCase<T> A<T>(string actionDescription, Action<T> test) where T : new()
+        public static TestCase<T> A<T>(string testCaseDescription, Action<T> test) where T : new()
         {
-            return A(actionDescription, new T(), test);
+            return A(testCaseDescription, new T(), test);
         }
         /// <summary>
-        /// Prepares the test Context with an empty SetupContext instantiating the 
+        /// Prepares the test case with an empty SetupContext instantiating the 
         /// object under test to an instance of T using the default constructor of type T.
         /// </summary>
         /// <typeparam name="T">The type of the </typeparam>
-        /// <param name="actionDescription"></param>
+        /// <param name="testCaseDescription"></param>
         /// <param name="test"></param>
         /// <returns></returns>
-        public static TestCase<T> A<T>(string actionDescription, Action<T, TestCaseRegistry> test) where T : new()
+        public static TestCase<T> A<T>(string testCaseDescription, Action<T, TestCaseRegistry> test) where T : new()
         {
-            return A(actionDescription, new T(), test);
+            return A(testCaseDescription, new T(), test);
         }
 
         /// <summary>
@@ -66,30 +66,30 @@ namespace Bam.Test
         /// to the specified objectUnderTest
         /// </summary>
         /// <typeparam name="T">The type of the object under test.</typeparam>
-        /// <param name="actionDescription">A description of what the test action will do</param>
+        /// <param name="testCaseDescription">A description of what the test action will do</param>
         /// <param name="objectUnderTest">The object instance being tested</param>
         /// <param name="test">the test delegate</param>
         /// <returns>Context</returns>
-        public static TestCase<T> A<T>(string actionDescription, T objectUnderTest, Action<T> test)
+        public static TestCase<T> A<T>(string testCaseDescription, T objectUnderTest, Action<T> test)
         {
             TestCaseRegistry testCaseRegistry = new TestCaseRegistry();
             testCaseRegistry.Set(objectUnderTest);
-            return new TestCase<T>(testCaseRegistry, TestCaseRegistry.GetActionDescription<T>(actionDescription), test);
+            return new TestCase<T>(testCaseRegistry, TestCaseRegistry.GetActionDescription<T>(testCaseDescription), test);
         }
         /// <summary>
         /// Prepares the TestCase with an empty TestCaseRegistry setting the object under test
         /// to the specified objectUnderTest
         /// </summary>
         /// <typeparam name="T">The type of the object under test.</typeparam>
-        /// <param name="actionDescription">A description of what the test action will do</param>
+        /// <param name="testCaseDescription">A description of what the test action will do</param>
         /// <param name="objectUnderTest">The object instance being tested</param>
         /// <param name="test">the test delegate</param>
         /// <returns>Context</returns>
-        public static TestCase<T> A<T>(string actionDescription, T objectUnderTest, Action<T, TestCaseRegistry> test)
+        public static TestCase<T> A<T>(string testCaseDescription, T objectUnderTest, Action<T, TestCaseRegistry> test)
         {
             TestCaseRegistry testCaseRegistry = new TestCaseRegistry();
             testCaseRegistry.Set(objectUnderTest);
-            return new TestCase<T>(testCaseRegistry, TestCaseRegistry.GetActionDescription<T>(actionDescription), test);
+            return new TestCase<T>(testCaseRegistry, TestCaseRegistry.GetActionDescription<T>(testCaseDescription), test);
         }
     }
 }

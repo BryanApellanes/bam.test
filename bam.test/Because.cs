@@ -4,14 +4,43 @@
 
 namespace Bam.Test
 {
+    public class Because<T> : Because
+    {
+        internal Because(string testDescription, TestCaseRegistry testCaseRegistry, TestCase<T> testCase) : base(testDescription, testCaseRegistry)
+        {
+            TestCase = testCase;
+        }
+
+        public Because(Because because, TestCase<T> testCase) : base(because.TestDescription, because.TestCaseRegistry)
+        {
+            TestCase = testCase;
+            _assertions = because.Assertions;
+            Result = because.Result;
+        }
+        
+        public TestCase<T> TestCase { get; set; }
+        public void TheTestCase(string descriptionOfTestCaseAssertion, Func<TestCase<T>, bool> testCaseAssertion, string? failureMessage = null)
+        {
+            bool? assertionResult = false;
+            try
+            {
+                assertionResult = testCaseAssertion(TestCase);
+            }
+            catch (Exception ex)
+            {
+                failureMessage = $"The test case assertion threw an exception: {ex}";
+            }
+            ItsTrue($"the test case {descriptionOfTestCaseAssertion}", assertionResult.Value, failureMessage);
+        }
+    }
     /// <summary>
     /// Provides a mechanism by which assertions are tracked for a test.
     /// </summary>
     public class Because
     {
         readonly TestCaseRegistry _testCaseRegistry;
-        readonly List<Assertion> _assertions;
-        internal Because(string testDescription, TestCaseRegistry testCaseRegistry)
+        protected List<Assertion> _assertions;
+        public Because(string testDescription, TestCaseRegistry testCaseRegistry)
         {
             TestDescription = testDescription;
             _assertions = new List<Assertion>();
@@ -26,14 +55,14 @@ namespace Bam.Test
             get;
             private set;
         }
-
+        
         /// <summary>
         /// Gets the SetupContext instance for the current test.
         /// </summary>
         public TestCaseRegistry TestCaseRegistry => _testCaseRegistry;
 
         /// <summary>
-        /// Gets the object under test from the underlying SetupContext.
+        /// Gets the object under test from the underlying TestCaseRegistry.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
@@ -106,7 +135,7 @@ namespace Bam.Test
         }
 
         private ResultContext? _theResult;
-        public ResultContext TheResult
+        public virtual ResultContext TheResult
         {
             get
             {
@@ -118,14 +147,36 @@ namespace Bam.Test
             }
         }
 
-        public void TheObjectUnderTestAs<T>(string truthStatementAboutTheObjectUnderTest, Func<T?, bool?> assertAction,
-            string? failureMessage = null)
+        private ObjectUnderTestContext? _objectUnderTest;
+        public ObjectUnderTestContext TheObjectUnderTest
+        {
+            get
+            {
+                if (_objectUnderTest == null)
+                {
+                    _objectUnderTest = new ObjectUnderTestContext(this, _testCaseRegistry.ObjectUnderTest);
+                }
+                return _objectUnderTest;
+            }
+        }
+        
+        public void TheObjectUnderTestAs<T>(string truthStatementAboutTheObjectUnderTest, Func<T?, bool> assertAction, string? failureMessage = null)
         {
             _assertions.Add(new Assertion
             {
-                Passed = assertAction(ObjectUnderTest<T>()) == true,
-                SuccessMessage = $"the object under test {truthStatementAboutTheObjectUnderTest}",
-                FailureMessage = failureMessage ?? $"{truthStatementAboutTheObjectUnderTest} was FALSE"
+                Passed = assertAction(ObjectUnderTest<T>()),
+                SuccessMessage = $"the ObjectUnderTest {truthStatementAboutTheObjectUnderTest}",
+                FailureMessage = $"the ObjectUnderTest {failureMessage}"
+            });
+        }
+
+        public void TheObjectUnderTestIsNotNull()
+        {
+            _assertions.Add(new Assertion
+            {
+                Passed = _testCaseRegistry?.ObjectUnderTest != null,
+                SuccessMessage = "the ObjectUnderTest was not null",
+                FailureMessage = "the ObjectUnderTest was null"
             });
         }
         
@@ -145,7 +196,7 @@ namespace Bam.Test
             {
                 Passed = assertAction(TheResult.As<T>()) == true,
                 SuccessMessage = $"the result {truthStatementAboutTheResult}",
-                FailureMessage = failureMessage ?? $"{truthStatementAboutTheResult} was FALSE"
+                FailureMessage = $"the result {failureMessage}"
             });
         }
         
@@ -173,8 +224,8 @@ namespace Bam.Test
                 new Assertion
                 {
                     Passed = Result != null && Result is T,
-                    SuccessMessage = $"Result is {typeof(T).Name}",
-                    FailureMessage = $"Result is NOT {typeof(T).Name}"
+                    SuccessMessage = $"the Result is {typeof(T).Name}",
+                    FailureMessage = $"the Result is NOT {typeof(T).Name}"
                 });
         }
         
@@ -190,8 +241,8 @@ namespace Bam.Test
                 new Assertion
                 {
                     Passed = Result.Equals(obj),
-                    SuccessMessage = $"result equals the specified value ({obj.ToString()})",
-                    FailureMessage = $"result does NOT equal the specified value ({obj.ToString()})"
+                    SuccessMessage = $"the Result equals the specified value ({obj.ToString()})",
+                    FailureMessage = $"the Result does NOT equal the specified value ({obj.ToString()})"
                 });
         }
 
@@ -207,11 +258,25 @@ namespace Bam.Test
                 new Assertion
                 {
                     Passed = Result == obj,
-                    SuccessMessage = $"result is same as the specified value ({obj.ToString()})",
-                    FailureMessage = $"result is NOT same as the specified value ({obj.ToString()})"
+                    SuccessMessage = $"the Result is same as the specified value ({obj.ToString()})",
+                    FailureMessage = $"the Result is NOT same as the specified value ({obj.ToString()})"
                 });
         }
 
+        /// <summary>
+        /// Add a passed assertion with the specified message.
+        /// </summary>
+        /// <param name="message">The message to display.</param>
+        public void AdditionalInformation(string message)
+        {
+            _assertions.Add(
+                new Assertion
+                {
+                    Passed = true,
+                    SuccessMessage = message,
+                });
+        }
+        
         /// <summary>
         /// Does not perform an assertion, rather outputs the string representation of the specified obj
         /// using ToString().
@@ -263,8 +328,8 @@ namespace Bam.Test
                 new Assertion
                 {
                     Passed = Result.GetType().IsSubclassOf(type),
-                    SuccessMessage = $"result is a subclass of type {type.Name}",
-                    FailureMessage = $"result is NOT of type {type.Name}"
+                    SuccessMessage = $"the Result is a subclass of type {type.Name}",
+                    FailureMessage = $"the Result is NOT of type {type.Name}"
                 });
         }
 
@@ -278,7 +343,7 @@ namespace Bam.Test
             });
         }
 
-        internal Assertion[] Assertions => _assertions.ToArray();
+        public List<Assertion> Assertions => _assertions;
 
         public T ResultAs<T>()
         {
@@ -303,7 +368,7 @@ namespace Bam.Test
                 return this;
             }
         }
-
+        
         internal Because CleanUp(Action<TestCaseRegistry> cleanup)
         {
             cleanup(_testCaseRegistry);
@@ -332,7 +397,7 @@ namespace Bam.Test
         }
 
         /// <summary>
-        /// Throws an exception if the test failed.  Same as ThrowExceptionIfTheTestFailed.
+        /// Throws an exception if assertions failed.  Same as ThrowExceptionIfTheTestFailed.
         /// </summary>
         public void UnlessItFailed(string message = "The test failed, please see test output for more information.")
         {

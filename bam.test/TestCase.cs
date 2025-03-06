@@ -12,8 +12,9 @@ namespace Bam.Test
     /// <typeparam name="T"></typeparam>
     public class TestCase<T>
     {
-        readonly TestCaseRegistry _testCaseRegistry;
         readonly Because _because;
+        private Because<T> _testCaseBecause;
+        readonly TestCaseRegistry _testCaseRegistry;
         readonly Action<T> _testMethod;
         readonly Action<T, TestCaseRegistry> _altTestMethod;
         readonly Func<T, object> _outputAction;
@@ -23,6 +24,7 @@ namespace Bam.Test
             Description = testDescription;
             _testCaseRegistry = testCaseRegistry;
             _because = new Because(testDescription, testCaseRegistry);
+            _testCaseBecause = new Because<T>(_because, this);
             _testMethod = (o) => { };
             _altTestMethod = (o, c) => { };
             _outputAction = (o) => o;
@@ -63,13 +65,29 @@ namespace Bam.Test
             _outputAction = outputAction;
         }
 
+        public string Summary { get; set; }
         public string Description { get; init; }
         /// <summary>
         /// Causes the test case to run, same as It.
         /// </summary>
         public TestCase<T> TheTest => It;
 
-        bool run;
+        public Exception? Exception { get; private set; }
+
+        bool _shouldThrow;
+        
+        /// <summary>
+        /// Causes the test case not to automatically fail if an exception is thrown so assertions can be made about an expected exception.
+        /// </summary>
+        /// <param name="shouldThrow"></param>
+        /// <returns></returns>
+        public TestCase<T> ExpectException(bool shouldThrow)
+        {
+            _shouldThrow = shouldThrow;
+            return this;
+        }
+        
+        bool _run;
         /// <summary>
         /// Causes the test case to run, same as TheTest.
         /// </summary>
@@ -77,26 +95,42 @@ namespace Bam.Test
         {
             get
             {
-                if (!run)
+                if (!_run)
                 {
-                    run = true;
+                    _run = true;
                     try
                     {
                         T objectUnderTest = _testCaseRegistry.Get<T>();
+                        if (objectUnderTest == null)
+                        {
+                            throw new InvalidOperationException($"Failed to instantiate ObjectUnderTest of type {typeof(T).Name}");
+                        }
                         _testMethod(objectUnderTest);
                         _altTestMethod(objectUnderTest, _testCaseRegistry);
                         _because.Result = _outputAction(objectUnderTest);
+                        _testCaseBecause = new Because<T>(_because, this);
                         _testCaseRegistry.ObjectUnderTest = objectUnderTest;
                     }
                     catch (Exception ex)
                     {
-                        _because.ExceptionWasThrown(ex);
+                        Exception = ex;
+                        if (!_shouldThrow)
+                        {
+                            _because.ExceptionWasThrown(ex);
+                        }
+                        _testCaseBecause = new Because<T>(_because, this);
                     }
                 }
                 return this;
             }
         }
 
+        public TestCase<T> ShouldPass(Action<Because<T>> actionToAssertResults)
+        {
+            actionToAssertResults(_testCaseBecause);
+            return this;
+        }
+        
         /// <summary>
         /// The entry point into test validation.  Calls the specified
         /// actionToAssertResults passing it the Because object of the 
@@ -143,6 +177,11 @@ namespace Bam.Test
             return this;
         }
 
+        public TestCaseResult<T> GetResult()
+        {
+            return new TestCaseResult<T>(this, _testCaseBecause);
+        }
+        
         /// <summary>
         /// Calls Write() on the IBecauseWriter for the current test and
         /// marks the test complete.

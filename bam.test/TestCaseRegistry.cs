@@ -12,11 +12,13 @@ namespace Bam.Test
     /// </summary>
     public class TestCaseRegistry : ServiceRegistry
     {
-        internal TestCaseRegistry()
+        public TestCaseRegistry()
         {
             Set<IBecauseWriter>(new ConsoleBecauseWriter());
         }
 
+        public string Description { get; set; }
+        
         public TestCase<T> When<T>(string actionDescription, Action<T> test)
         {
             return new TestCase<T>(this, GetActionDescription<T>(actionDescription), test);

@@ -30,7 +30,7 @@ namespace Bam.Test
             {
                 if (string.IsNullOrWhiteSpace(_failureMessage))
                 {
-                    return $"{SuccessMessage} failed";
+                    return $"{SuccessMessage} FAILED";
                 }
 
                 return _failureMessage;

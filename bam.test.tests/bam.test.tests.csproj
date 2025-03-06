@@ -15,7 +15,6 @@
 
     <ItemGroup>
       <Folder Include="Integration\" />
-      <Folder Include="Specification\" />
     </ItemGroup>
 
 </Project>

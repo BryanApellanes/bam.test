@@ -7,7 +7,7 @@ using Bam.Test.Tests.TestClasses;
 
 namespace Bam.Test.Tests.Unit;
 
-
+[UnitTestMenu("DaoRepositoryShould")]
 public class DaoRepositoryShould : UnitTestMenuContainer
 {
     [UnitTest]
@@ -17,28 +17,34 @@ public class DaoRepositoryShould : UnitTestMenuContainer
         string testName = 32.RandomLetters();
         
         After.Setup(Setup)
-            .When<IDaoRepository>(testCaseDescription, (daoRepo) =>
+        .When<IDaoRepository>(testCaseDescription, (daoRepo) =>
+        {
+            TestData testData = new TestData()
             {
-                TestData testData = new TestData()
-                {
-                    Name = testName,
-                };
-                return daoRepo.Create(testData);
-            })
-            .TheTest
-            .ShouldPass(because =>
-            {
-                TestData? testResult = because.TheResult.As<TestData>();
-                because.TheObjectUnderTestAs<DaoRepository>("LastException property was null", (objectUnderTest) => objectUnderTest?.LastException == null);
-                because.TheResult.IsNotNull();
-                because.TheResult.Is<TestData>();
-                because.TheResultAs<TestData>($"has an id greater than zero: {testResult?.Id}", result => result?.Id > 0);
-                because.TheResultAs<TestData>($"has the correct name: {testName}", result => result?.Name.Equals(testName));
-                
-            })
-            .SoBeHappy()
-            .Passed
-            .ShouldBeTrue($"{testCaseDescription}: FAILED");
+                Name = testName,
+            };
+            return daoRepo.Create(testData);
+        })
+        .TheTest
+        .ShouldPass(because =>
+        {
+            TestData? testResult = because.TheResult.As<TestData>();
+            
+            because.TheObjectUnderTest
+                .IsNotNull()
+                .As<DaoRepository>("is not null", (o) => o != null)
+                .As<DaoRepository>("LastException property was not null", (o) => o?.LastException == null)
+                .As<DaoRepository>("has its Database property set", (o) => o?.Database != null);
+            
+            because.TheResult
+                .IsNotNull()
+                .Is<TestData>()
+                .As<TestData>($"has an id greater than zero: {testResult?.Id}", result => result?.Id > 0)
+                .As<TestData>($"has the correct name: {testName}", result => result?.Name.Equals(testName));
+            
+        })
+        .SoBeHappy()
+        .UnlessItFailed();
     }
 
     private void Setup(TestCaseRegistry testCaseRegistry)
@@ -50,6 +56,6 @@ public class DaoRepositoryShould : UnitTestMenuContainer
             .For<IWrapperGenerator>().Use<HandlebarsWrapperGenerator>();
         DaoRepository repo = svcRegistry.Get<DaoRepository>();
         repo.AddType<TestData>();
-        svcRegistry.For<IDaoRepository>().Use(svcRegistry.Get<DaoRepository>());
+        svcRegistry.For<IDaoRepository>().Use(repo);
     }
 }

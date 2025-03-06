@@ -17,19 +17,28 @@ namespace Bam.Test
             System.Console.ForegroundColor = color;
             System.Console.WriteLine("{0} ", result);
             System.Console.ForegroundColor = ConsoleColor.Cyan;
-            System.Console.Write("\tbecause ");
 
             if (because.Passed)
             {
-                Assertion[] passedAssertions = because.Assertions;
-                WritePassedAssertions(passedAssertions);
+                System.Console.Write("\tbecause ");
             }
             else
             {
+                System.Console.Write("\twhile ");
+            }
+
+            Assertion[] assertions = because.Assertions.ToArray();
+            WritePassedAssertions(assertions);
+            
+            if(!because.Passed)
+            {
+                System.Console.ForegroundColor = ConsoleColor.Red;
+                System.Console.Write("\t");
+                
                 Assertion[] failed = (from assertion in because.Assertions
                                       where !assertion.Passed
                                       select assertion).ToArray();
-                System.Console.ForegroundColor = ConsoleColor.Red;
+                
                 WriteFailedAssertions(failed);
             }
 
@@ -37,22 +46,25 @@ namespace Bam.Test
             System.Console.ResetColor();
         }
 
-        public void WriteFailedAssertions(Assertion[] failed)
+        public void WriteFailedAssertions(Assertion[] assertions)
         {
-            for (int i = 0; i < failed.Length; i++)
+            Assertion[] failedAssertions = assertions.Where(a => !a.Passed).ToArray();
+            for (int i = 0; i < failedAssertions.Length; i++)
             {
                 if (i >= 1)
                 {
                     System.Console.ForegroundColor = ConsoleColor.Cyan;
                     System.Console.Write("\tand ");
                 }
-                Assertion assertion = failed[i];
+                System.Console.ForegroundColor = ConsoleColor.Red;
+                Assertion assertion = failedAssertions[i];
                 System.Console.WriteLine("{0}", assertion.FailureMessage);
             }
         }
 
-        public void WritePassedAssertions(Assertion[] passedAssertions)
+        public void WritePassedAssertions(Assertion[] assertions)
         {
+            Assertion[] passedAssertions = assertions.Where(x => x.Passed).ToArray();
             for (int i = 0; i < passedAssertions.Length; i++)
             {
                 Assertion assertion = passedAssertions[i];
