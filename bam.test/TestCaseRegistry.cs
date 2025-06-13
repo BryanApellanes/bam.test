@@ -28,7 +28,32 @@ namespace Bam.Test
         {
             return new TestCase<T>(this, GetActionDescription<T>(actionDescription), test);
         }
+        
+        public TestCase<T> When<T>(string actionDescription, Func<T, TestCaseRegistry, object> test)
+        {
+            return new TestCase<T>(this, GetActionDescription<T>(actionDescription), test);
+        }
+        
+        public TestCase<T> When<T>(string actionDescription, Func<T, Task> asyncTest)
+        {
+            return new AsyncTestCase<T>(this, GetActionDescription<T>(actionDescription), asyncTest);
+        }
+        
+        public TestCase<T> When<T>(string actionDescription, Func<T, TestCaseRegistry, Task> asyncTest)
+        {
+            return new AsyncTestCase<T>(this, GetActionDescription<T>(actionDescription), asyncTest);
+        }
+        
+        public TestCase<T> When<T>(string actionDescription, Func<T, Task<object>> asyncTest)
+        {
+            return new AsyncTestCase<T>(this, GetActionDescription<T>(actionDescription), asyncTest);
+        }
 
+        public TestCase<T> When<T>(string actionDescription, Func<T, TestCaseRegistry, Task<object>> asyncTest)
+        {
+            return new AsyncTestCase<T>(this, GetActionDescription<T>(actionDescription), asyncTest);
+        }
+        
         /// <summary>
         /// Prepares the test case with the object under test being of type T passed to the test function.
         /// </summary>

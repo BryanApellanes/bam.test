@@ -20,6 +20,11 @@ namespace Bam.Test
         {
             return A(testCaseDescription, new T(), test);
         }
+        
+        public static TestCase<T> A<T>(string testCaseDescription, Func<T> instantiator, Func<T, object> test)
+        {
+            return A(testCaseDescription, instantiator(), test);
+        }
 
         /// <summary>
         /// 

@@ -22,4 +22,10 @@ public class ObjectUnderTestContext
         this.Because.TheObjectUnderTestIsNotNull();
         return this;
     }
+
+    public ObjectUnderTestContext IsObjectOfType<T>()
+    {
+        this.Because.ItsTrue($"The `ObjectUnderTest is {typeof(T).Name}`", ObjectUnderTest is T, $"The object under test is NOT a {typeof(T).Name}");
+        return this;
+    }
 }

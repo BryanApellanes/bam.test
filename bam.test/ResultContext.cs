@@ -51,12 +51,22 @@ public class ResultContext
         return this;
     }
 
+    /// <summary>
+    /// Asserts that Result is T.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
     public ResultContext Is<T>()
     {
         this.Because.ResultIs<T>();
         return this;
     }
     
+    /// <summary>
+    /// Asserts that Result.GetType() == typeof(T) evaluates to True.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
     public ResultContext IsOfType<T>()
     {
         this.Because.ResultIsOfType<T>();

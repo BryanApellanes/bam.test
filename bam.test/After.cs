@@ -22,5 +22,11 @@ namespace Bam.Test
             setup(testCaseRegistryInstance);
             return testCaseRegistryInstance;
         }
+
+        public static TestCaseRegistry Setup(Func<TestCaseRegistry, Task<TestCaseRegistry>> setup)
+        {
+            TestCaseRegistry testCaseRegistryInstance = new TestCaseRegistry();
+            return setup(testCaseRegistryInstance).Result;
+        }
     }
 }

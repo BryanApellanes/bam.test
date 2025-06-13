@@ -9,15 +9,17 @@ namespace Bam.Test
     /// the SetupContext, the test delegate and the assertions
     /// made during the verification phase of the test.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">The type of the object under test.</typeparam>
     public class TestCase<T>
     {
-        readonly Because _because;
-        private Because<T> _testCaseBecause;
-        readonly TestCaseRegistry _testCaseRegistry;
+        protected readonly Because _because;
+        protected Because<T> _testCaseBecause;
+        protected readonly TestCaseRegistry _testCaseRegistry;
         readonly Action<T> _testMethod;
         readonly Action<T, TestCaseRegistry> _altTestMethod;
+        
         readonly Func<T, object> _outputAction;
+        readonly Func<T, TestCaseRegistry, object> _altOutputAction;
 
         internal TestCase(TestCaseRegistry testCaseRegistry, string testDescription)
         {
@@ -25,9 +27,10 @@ namespace Bam.Test
             _testCaseRegistry = testCaseRegistry;
             _because = new Because(testDescription, testCaseRegistry);
             _testCaseBecause = new Because<T>(_because, this);
-            _testMethod = (o) => { };
-            _altTestMethod = (o, c) => { };
-            _outputAction = (o) => o;
+            _testMethod = null;//(o) => { };
+            _altTestMethod = null;//(o, c) => { };
+            _outputAction = null;// (o) => o;
+            _altOutputAction = null;//(o, c) => null;
         }
 
         /// <summary>
@@ -64,6 +67,12 @@ namespace Bam.Test
         {
             _outputAction = outputAction;
         }
+        
+        public TestCase(TestCaseRegistry testCaseRegistry, string testDescription, Func<T, TestCaseRegistry, object> altOutputAction)
+            : this(testCaseRegistry, testDescription)
+        {
+            _altOutputAction = altOutputAction;
+        }
 
         public string Summary { get; set; }
         public string Description { get; init; }
@@ -72,9 +81,9 @@ namespace Bam.Test
         /// </summary>
         public TestCase<T> TheTest => It;
 
-        public Exception? Exception { get; private set; }
+        public Exception? Exception { get; protected set; }
 
-        bool _shouldThrow;
+        protected bool _shouldThrow;
         
         /// <summary>
         /// Causes the test case not to automatically fail if an exception is thrown so assertions can be made about an expected exception.
@@ -87,40 +96,62 @@ namespace Bam.Test
             return this;
         }
         
-        bool _run;
+        bool? _run;
+        readonly object _runLock = new object();
         /// <summary>
         /// Causes the test case to run, same as TheTest.
         /// </summary>
-        public TestCase<T> It
+        public virtual TestCase<T> It
         {
             get
             {
-                if (!_run)
+                lock (_runLock)
                 {
-                    _run = true;
-                    try
+                    if (_run == null || _run == false)
                     {
-                        T objectUnderTest = _testCaseRegistry.Get<T>();
-                        if (objectUnderTest == null)
+                        _run = true;
+                        try
                         {
-                            throw new InvalidOperationException($"Failed to instantiate ObjectUnderTest of type {typeof(T).Name}");
+                            T objectUnderTest = _testCaseRegistry.Get<T>();
+                            if (objectUnderTest == null)
+                            {
+                                throw new InvalidOperationException($"Failed to instantiate ObjectUnderTest of type {typeof(T).Name}");
+                            }
+
+                            if (_testMethod != null)
+                            {
+                                _testMethod(objectUnderTest);
+                            }
+
+                            if (_altTestMethod != null)
+                            {
+                                _altTestMethod(objectUnderTest, _testCaseRegistry);
+                            }
+
+                            if (_outputAction != null)
+                            {
+                                _because.Result = _outputAction(objectUnderTest);
+                            }
+
+                            if (_altOutputAction != null)
+                            {
+                                _because.Result = _altOutputAction(objectUnderTest, _testCaseRegistry);
+                            }
+                            _testCaseBecause = new Because<T>(_because, this);
+                            _testCaseRegistry.ObjectUnderTest = objectUnderTest;
                         }
-                        _testMethod(objectUnderTest);
-                        _altTestMethod(objectUnderTest, _testCaseRegistry);
-                        _because.Result = _outputAction(objectUnderTest);
-                        _testCaseBecause = new Because<T>(_because, this);
-                        _testCaseRegistry.ObjectUnderTest = objectUnderTest;
-                    }
-                    catch (Exception ex)
-                    {
-                        Exception = ex;
-                        if (!_shouldThrow)
+                        catch (Exception ex)
                         {
-                            _because.ExceptionWasThrown(ex);
+                            Exception = ex;
+                            if (!_shouldThrow)
+                            {
+                                _because.ExceptionWasThrown(ex);
+                            }
+                            _testCaseBecause = new Because<T>(_because, this);
                         }
-                        _testCaseBecause = new Because<T>(_because, this);
-                    }
+                    }    
                 }
+                
                 return this;
             }
         }
