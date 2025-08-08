@@ -72,6 +72,12 @@ public class ResultContext
         this.Because.ResultIsOfType<T>();
         return this;
     }
+
+    public ResultContext IsOfType(Type type)
+    {
+        this.Because.ResultIsOfType(type);
+        return this;
+    }
     
     public ResultContext IsEqualTo(object value)
     {

@@ -218,6 +218,17 @@ namespace Bam.Test
                 });
         }
 
+        public void ResultIsOfType(Type type)
+        {
+            _assertions.Add(
+                new Assertion
+                {
+                    Passed = Result != null && Result.GetType() == type,
+                    SuccessMessage = $"result is of type {type.Name}",
+                    FailureMessage = $"result is NOT of type {type.Name}, but was of type {Result?.GetType().Name}"
+                });
+        }
+        
         public void ResultIs<T>()
         {
             _assertions.Add(
