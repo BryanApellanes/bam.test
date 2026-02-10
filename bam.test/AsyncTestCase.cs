@@ -70,6 +70,7 @@ public class AsyncTestCase<T> : TestCase<T>
                         }
 
                         Task<object> outputTask = null;
+                        Task<object> altOutputTask = null;
                         if (_outputAsyncTestMethod != null)
                         {
                             outputTask = _outputAsyncTestMethod(objectUnderTest);
@@ -78,14 +79,20 @@ public class AsyncTestCase<T> : TestCase<T>
 
                         if (_altOutputAsyncTestMethod != null)
                         {
-                            tasks.Add(_altOutputAsyncTestMethod(objectUnderTest, _testCaseRegistry));
+                            altOutputTask = _altOutputAsyncTestMethod(objectUnderTest, _testCaseRegistry);
+                            tasks.Add(altOutputTask);
                         }
 
                         Task.WaitAll(tasks.ToArray());
-                        
+
                         if (outputTask != null)
                         {
                             _because.Result = outputTask.Result;
+                        }
+
+                        if (altOutputTask != null)
+                        {
+                            _because.Result = altOutputTask.Result;
                         }
                         
                         _testCaseBecause = new Because<T>(_because, this);
