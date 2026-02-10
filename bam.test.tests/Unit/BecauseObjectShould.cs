@@ -47,7 +47,7 @@ public class BecauseObjectShould : UnitTestMenuContainer
         .ShouldPass(because =>
         {
             because.TheTestCase("is not null", (tc)=> tc != null);
-            because.TestCase.ShouldNotBeNull();
+            because.ItsTrue("TestCase is not null", because.TestCase != null);
             because.TheTestCase("threw an exception as expected", (tc) => tc.Exception != null);
         })
         .SoBeHappy()
