@@ -8,20 +8,34 @@ public class BecauseObjectShould : UnitTestMenuContainer
     [UnitTest]
     public void ShouldHaveBaseAssertions()
     {
-        Because because = new Because("test test description", new TestCaseRegistry());
-        TestCase<TestData> testCase = When.A<TestData>("is used for testing", (td) => { });
-        Because<TestData> becauseWithGenericParameter = new Because<TestData>(because, testCase);
+        TestCase<TestData> sampleTestCase = When.A<TestData>("is used for testing", (td) => { });
 
-        because.ItsTrue("This is an assertion", true);
-        becauseWithGenericParameter.Assertions.Count.ShouldEqual(1);
-        if (becauseWithGenericParameter.TestCase == null)
+        When.A<Because>("tracks assertions correctly",
+            () =>
+            {
+                Because sampleBecause = new Because("test test description", new TestCaseRegistry());
+                sampleBecause.ItsTrue("This is an assertion", true);
+                return sampleBecause;
+            },
+            (sampleBecause) =>
+            {
+                Because<TestData> genericBecause = new Because<TestData>(sampleBecause, sampleTestCase);
+                return new object[] { sampleBecause, genericBecause };
+            })
+        .TheTest
+        .ShouldPass(because =>
         {
-            throw new Exception("TestCase was null");
-        }
-        because.Passed.ShouldBeTrue();
-        becauseWithGenericParameter.Passed.ShouldBeTrue();
-        becauseWithGenericParameter.TestCase.ShouldNotBeNull();
-        becauseWithGenericParameter.TestCase.Description.ShouldBe(testCase.Description);
+            object[] results = (object[])because.Result;
+            Because sampleBecause = (Because)results[0];
+            Because<TestData> genericBecause = (Because<TestData>)results[1];
+            because.ItsTrue("has 1 assertion", genericBecause.Assertions.Count == 1);
+            because.ItsTrue("Passed is true", sampleBecause.Passed);
+            because.ItsTrue("generic Passed is true", genericBecause.Passed);
+            because.ItsTrue("TestCase is not null", genericBecause.TestCase != null);
+            because.ItsTrue("TestCase Description matches", genericBecause.TestCase?.Description == sampleTestCase.Description);
+        })
+        .SoBeHappy()
+        .UnlessItFailed();
     }
 
     [UnitTest]
