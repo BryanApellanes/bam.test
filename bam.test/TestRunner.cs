@@ -261,28 +261,16 @@ namespace Bam.Test
             }
             else
             {
-                // TODO: use ServiceRegistry here to determine how to instantiate
-                // test class
-
                 string typeName = consoleMethod.Method.DeclaringType.Name;
-                ConstructorInfo ctor = consoleMethod.Method.DeclaringType.GetConstructor(Type.EmptyTypes);
-                if (ctor == null)
-                    ExceptionExtensions.ThrowInvalidOperation("The declaring type {0} of method {1} does not have a parameterless constructor, test cannot be run.", typeName, consoleMethod.Method.Name);
+                ConstructorInfo? ctor = consoleMethod.Method.DeclaringType.GetConstructor(Type.EmptyTypes);
+                if (ctor != null)
+                {
+                    object instance = ctor.Invoke(null);
+                    instance.IsNotNull($"Unable to instantiate declaring type {typeName} of method {consoleMethod.Method.Name}");
+                    consoleMethod.Provider = instance;
+                }
 
-                object instance = ctor.Invoke(null);
-                instance.IsNotNull($"Unable to instantiate declaring type {typeName} of method {consoleMethod.Method.Name}");
-
-                consoleMethod.Provider = instance;
-
-                // TODO: implement isolation as a separate process runner
-                /*                if (isolateMethodCalls)
-                                {
-                                    CommandLineInterface.InvokeInSeparateAppDomain(invokeTarget, consoleMethod);
-                                }
-                                else
-                                {
-                CommandLineInterface.InvokeInCurrentAppDomain(invokeTarget, consoleMethod);
-                /*}*/
+                consoleMethod.Invoke();
             }
         }
 
