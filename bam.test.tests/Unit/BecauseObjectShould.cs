@@ -57,7 +57,12 @@ public class BecauseObjectShould : UnitTestMenuContainer
     [UnitTest]
     public void ViewResults()
     {
-        When.A<TestData>("is used for testing, but an exception is thrown by the test case", (td) => td)
+        When.A<TestData>("is used for viewing results", (td) =>
+            {
+                td.Name = 16.RandomLetters();
+                td.Id = 1;
+                return td;
+            })
             .TheTest
             .ShouldPass(because =>
             {
