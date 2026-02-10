@@ -3,6 +3,7 @@ using Bam.ExceptionHandling;
 using Bam.Logging;
 using System.Diagnostics;
 using System.Reflection;
+using Bam.Test.Integration;
 using Bam.Test.Specification;
 using Bam.Test.Unit;
 
@@ -16,10 +17,8 @@ namespace Bam.Test
             _factory = new Dictionary<Type, Func<Assembly, ILogger, ITestRunner<TTestMethod>>>
             {
                 { typeof(UnitTestMethod), (assembly, logger) => (ITestRunner<TTestMethod>)new UnitTestRunner(assembly, logger) },
-                { typeof(SpecTestMethod), (assembly, logger) => (ITestRunner<TTestMethod>)new SpecTestRunner(assembly, logger) }
-                // TODO: 
-                // refactor Integration test handling to match established convention for Unit and Spec then 
-                // add IntegrationTest here
+                { typeof(SpecTestMethod), (assembly, logger) => (ITestRunner<TTestMethod>)new SpecTestRunner(assembly, logger) },
+                { typeof(IntegrationTestMethod), (assembly, logger) => (ITestRunner<TTestMethod>)new IntegrationTestRunner(assembly, logger) }
             };
         }
 

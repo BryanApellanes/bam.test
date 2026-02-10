@@ -1,25 +1,13 @@
-/*
-	Copyright © Bryan Apellanes 2015  
-*/
-
 namespace Bam.Test.Integration
 {
-    [AttributeUsage(AttributeTargets.Method)]
-    public class IntegrationTestAttribute : Attribute
+    public class IntegrationTest : TestAttribute
     {
-        public IntegrationTestAttribute()
+        public IntegrationTest() : base(TestType.Integration)
         {
         }
 
-        public IntegrationTestAttribute(string description)
-        {
-            Description = description;
-        }
+        public bool Ignore => !string.IsNullOrEmpty(IgnoreBecause);
 
-        public string Description
-        {
-            get;
-            private set;
-        }
+        public string IgnoreBecause { get; set; }
     }
 }

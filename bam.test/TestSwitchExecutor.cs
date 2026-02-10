@@ -2,6 +2,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using Bam.Console;
 using Bam.Logging;
+using Bam.Test.Integration;
 using Bam.Test.Specification;
 using Bam.Test.Unit;
 
@@ -29,7 +30,13 @@ namespace Bam.Test
                 executed = true;
             }
 
-            // TODO: add "it" handling when IntegrationTestRunner is implemented
+            if (arguments.Contains("it"))
+            {
+                var runner = new IntegrationTestRunner(assembly, logger);
+                runner.RunAllTests();
+                LogSummary(logger, runner.TestSummary);
+                executed = true;
+            }
 
             return executed;
         }

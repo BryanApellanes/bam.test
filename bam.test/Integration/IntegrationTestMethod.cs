@@ -1,7 +1,8 @@
-﻿using System.Reflection;
+using System.Reflection;
 
 namespace Bam.Test.Integration
 {
+    [Serializable]
     public class IntegrationTestMethod : TestMethod
     {
         public IntegrationTestMethod() : base()
@@ -21,9 +22,17 @@ namespace Bam.Test.Integration
         public static List<IntegrationTestMethod> FromAssembly(Assembly assembly)
         {
             List<IntegrationTestMethod> tests = new List<IntegrationTestMethod>();
-            tests.AddRange(FromAssembly<IntegrationTestMethod>(assembly, typeof(IntegrationTestAttribute)));
+            tests.AddRange(FromAssembly<IntegrationTestMethod>(assembly, typeof(IntegrationTest)));
             tests.Sort((l, r) => l.Information.CompareTo(r.Information));
             return tests;
+        }
+
+        public static List<IntegrationTestMethod> FromAssembly(Assembly assembly, string testGroup)
+        {
+            return FromAssembly(assembly).Where(itm =>
+                itm.Method.GetCustomAttributes<TestGroupAttribute>()
+                   .FirstOrDefault(attr => attr.Groups.Contains(testGroup)) != null)
+                .ToList();
         }
     }
 }
