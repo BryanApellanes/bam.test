@@ -61,6 +61,17 @@ public class ResultContext
         this.Because.ResultIs<T>();
         return this;
     }
+
+    /// <summary>
+    /// Casts Result to T and asserts using the provided function.
+    /// Unlike <see cref="As{T}(string, Func{T?, bool?}, string?)"/>, this method
+    /// has no class constraint, so it works with value types (bool, int, etc.).
+    /// </summary>
+    public ResultContext Is<T>(string truthStatement, Func<T, bool?> assertAction, string? failureMessage = null)
+    {
+        this.Because.ItsTrue(truthStatement, assertAction((T)this.Result) == true, failureMessage);
+        return this;
+    }
     
     /// <summary>
     /// Asserts that Result.GetType() == typeof(T) evaluates to True.
