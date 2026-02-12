@@ -12,6 +12,19 @@ namespace Bam.Test
     {
         public bool ExecuteTestSwitches(Assembly assembly, ILogger logger, IParsedArguments arguments)
         {
+            bool hasTestSwitch = arguments.Contains("ut") || arguments.Contains("spec") || arguments.Contains("it");
+
+            if (arguments.Contains("coverage") && hasTestSwitch)
+            {
+                var coverageRunner = new CoverageRunner(logger);
+                int exitCode = coverageRunner.Run(arguments);
+                if (exitCode != 0)
+                {
+                    BamConsoleContext.Exit(exitCode);
+                }
+                return true;
+            }
+
             bool executed = false;
 
             if (arguments.Contains("ut"))
