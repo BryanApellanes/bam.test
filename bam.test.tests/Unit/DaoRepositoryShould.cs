@@ -38,7 +38,6 @@ public class DaoRepositoryShould : UnitTestMenuContainer
             
             because.TheResult
                 .IsNotNull()
-                .Is<TestData>()
                 .As<TestData>($"has an id greater than zero: {testResult?.Id}", result => result?.Id > 0)
                 .As<TestData>($"has the correct name: {testName}", result => result?.Name.Equals(testName));
             

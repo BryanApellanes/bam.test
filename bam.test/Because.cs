@@ -181,26 +181,6 @@ namespace Bam.Test
         }
         
         /// <summary>
-        /// Provides the result to an assertion function and records the resulting assertion.
-        /// </summary>
-        /// <param name="truthStatementAboutTheResult"></param>
-        /// <param name="assertAction"></param>
-        /// <param name="failureMessage"></param>
-        /// <typeparam name="T"></typeparam>
-        /// <remarks>
-        /// Usage: because.TheResultAs&lt;int&gt;("is greater than zero", (result) => result > 0);
-        /// </remarks>
-        public void TheResultAs<T>(string truthStatementAboutTheResult, Func<T?, bool?> assertAction, string? failureMessage = null) where T: class
-        {
-            _assertions.Add(new Assertion
-            {
-                Passed = assertAction(TheResult.As<T>()) == true,
-                SuccessMessage = $"the result {truthStatementAboutTheResult}",
-                FailureMessage = $"the result {failureMessage}"
-            });
-        }
-        
-        /// <summary>
         /// Asserts that the type of the result of the test Function 
         /// is the same as the type specified by generic type T.  Only valid
         /// if the test method returned a value.

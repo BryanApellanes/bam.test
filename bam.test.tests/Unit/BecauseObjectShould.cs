@@ -67,7 +67,7 @@ public class BecauseObjectShould : UnitTestMenuContainer
             .ShouldPass(because =>
             {
                 because.TheTestCase("is not null", (tc)=> tc != null);
-                because.TheResult.Is<TestData>();
+                because.TheResult.As<TestData>();
                 because.TheResult.As<TestData>("has a name", tc => !string.IsNullOrEmpty(tc.Name), "does NOT have a name");
                 because.TheResult.As<TestData>("has an Id greater than 0", tc => tc.Id > 0, "does NOT have an Id greater than 0");
             })

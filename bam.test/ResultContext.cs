@@ -52,28 +52,6 @@ public class ResultContext
     }
 
     /// <summary>
-    /// Asserts that Result is T.
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <returns></returns>
-    public ResultContext Is<T>()
-    {
-        this.Because.ResultIs<T>();
-        return this;
-    }
-
-    /// <summary>
-    /// Casts Result to T and asserts using the provided function.
-    /// Unlike <see cref="As{T}(string, Func{T?, bool?}, string?)"/>, this method
-    /// has no class constraint, so it works with value types (bool, int, etc.).
-    /// </summary>
-    public ResultContext Is<T>(string truthStatement, Func<T, bool?> assertAction, string? failureMessage = null)
-    {
-        this.Because.ItsTrue(truthStatement, assertAction((T)this.Result) == true, failureMessage);
-        return this;
-    }
-    
-    /// <summary>
     /// Asserts that Result.GetType() == typeof(T) evaluates to True.
     /// </summary>
     /// <typeparam name="T"></typeparam>
@@ -83,7 +61,7 @@ public class ResultContext
         this.Because.ResultIsOfType<T>();
         return this;
     }
-    
+
     public ResultContext IsEqualTo(object value)
     {
         this.Because.ResultEquals(value);
@@ -95,16 +73,26 @@ public class ResultContext
         this.Because.ResultEqualsEquals(value);
         return this;
     }
-    
-    public ResultContext As<T>(string truthStatementAboutTheResult, Func<T?, bool?> assertAction, string? failureMessage = null) where T: class
+
+    /// <summary>
+    /// Asserts that Result is T and returns the cast value.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <returns>The result cast to T.</returns>
+    public T As<T>()
     {
-        this.Because.TheResultAs<T>(truthStatementAboutTheResult, assertAction, failureMessage);
-        return this;
+        this.Because.ResultIs<T>();
+        return (T)this.Result;
     }
-    
-    public T? As<T>() where T : class
+
+    /// <summary>
+    /// Casts Result to T and asserts using the provided function.
+    /// Works with both value types and reference types.
+    /// </summary>
+    public ResultContext As<T>(string truthStatement, Func<T, bool?> assertAction, string? failureMessage = null)
     {
-        return this.Result as T;
+        this.Because.ItsTrue(truthStatement, assertAction((T)this.Result) == true, failureMessage);
+        return this;
     }
 
     public T Cast<T>()
