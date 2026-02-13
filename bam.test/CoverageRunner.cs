@@ -37,7 +37,9 @@ namespace Bam.Test
 
             string filteredArgs = FilterCoverageArgs(arguments.OriginalStrings);
 
-            string collectArgs = $"collect --output \"{options.OutputFile}\" --output-format {options.Format} -- \"{exePath}\" {filteredArgs}";
+            string? settingsPath = options.GenerateSettingsFile();
+            string settingsArg = settingsPath != null ? $" --settings \"{settingsPath}\"" : "";
+            string collectArgs = $"collect --output \"{options.OutputFile}\" --output-format {options.Format}{settingsArg} -- \"{exePath}\" {filteredArgs}";
 
             _logger.Info("Running: {0} {1}", CoverageOptions.ToolName, collectArgs);
 
@@ -51,35 +53,42 @@ namespace Bam.Test
                 CreateNoWindow = true
             };
 
-            using var process = new Process { StartInfo = startInfo };
-
-            process.OutputDataReceived += (sender, e) =>
+            try
             {
-                if (e.Data != null)
+                using var process = new Process { StartInfo = startInfo };
+
+                process.OutputDataReceived += (sender, e) =>
                 {
-                    System.Console.WriteLine(e.Data);
-                }
-            };
+                    if (e.Data != null)
+                    {
+                        System.Console.WriteLine(e.Data);
+                    }
+                };
 
-            process.ErrorDataReceived += (sender, e) =>
-            {
-                if (e.Data != null)
+                process.ErrorDataReceived += (sender, e) =>
                 {
-                    System.Console.Error.WriteLine(e.Data);
+                    if (e.Data != null)
+                    {
+                        System.Console.Error.WriteLine(e.Data);
+                    }
+                };
+
+                process.Start();
+                process.BeginOutputReadLine();
+                process.BeginErrorReadLine();
+                process.WaitForExit();
+
+                if (process.ExitCode == 0)
+                {
+                    _logger.Info("Coverage report written to: {0}", options.OutputFile);
                 }
-            };
 
-            process.Start();
-            process.BeginOutputReadLine();
-            process.BeginErrorReadLine();
-            process.WaitForExit();
-
-            if (process.ExitCode == 0)
-            {
-                _logger.Info("Coverage report written to: {0}", options.OutputFile);
+                return process.ExitCode;
             }
-
-            return process.ExitCode;
+            finally
+            {
+                CoverageOptions.CleanupSettingsFile(settingsPath);
+            }
         }
 
         private static string FilterCoverageArgs(string[] originalArgs)
