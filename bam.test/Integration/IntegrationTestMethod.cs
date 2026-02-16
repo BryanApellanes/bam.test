@@ -30,9 +30,16 @@ namespace Bam.Test.Integration
         public static List<IntegrationTestMethod> FromAssembly(Assembly assembly, string testGroup)
         {
             return FromAssembly(assembly).Where(itm =>
-                itm.Method.GetCustomAttributes<TestGroupAttribute>()
-                   .FirstOrDefault(attr => attr.Groups.Contains(testGroup)) != null)
-                .ToList();
+            {
+                // Match by method-level TestGroupAttribute
+                if (itm.Method.GetCustomAttributes<TestGroupAttribute>()
+                       .Any(attr => attr.Groups.Contains(testGroup)))
+                    return true;
+
+                // Match by declaring class's IntegrationTestMenu selector
+                var menuAttr = itm.Method.DeclaringType?.GetCustomAttribute<IntegrationTestMenu>();
+                return menuAttr?.Selector == testGroup;
+            }).ToList();
         }
     }
 }

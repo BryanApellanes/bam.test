@@ -43,10 +43,13 @@ namespace Bam.Test
                 executed = true;
             }
 
-            if (arguments.Contains("it"))
+            if (arguments.Contains("it", out string? itGroup))
             {
                 var runner = new IntegrationTestRunner(assembly, logger);
-                runner.RunAllTests();
+                if (!string.IsNullOrEmpty(itGroup))
+                    runner.RunTestGroup(itGroup);
+                else
+                    runner.RunAllTests();
                 LogSummary(logger, runner.TestSummary);
                 executed = true;
             }
