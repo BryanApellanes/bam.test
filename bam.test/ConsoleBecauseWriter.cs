@@ -4,10 +4,19 @@
 
 namespace Bam.Test
 {
+    /// <summary>
+    /// Writes test results and assertions to the console with color-coded output:
+    /// green for passed, red for failed, and cyan for descriptive text.
+    /// </summary>
     public class ConsoleBecauseWriter : IBecauseWriter, IAssertionWriter
     {
         #region IBecauseWriter Members
 
+        /// <summary>
+        /// Writes the complete test result including the test description, pass/fail status,
+        /// and all individual assertions to the console.
+        /// </summary>
+        /// <param name="because">The Because object containing the test description and assertions.</param>
         public void Write(Because because)
         {
             System.Console.ForegroundColor = ConsoleColor.Cyan;
@@ -46,6 +55,10 @@ namespace Bam.Test
             System.Console.ResetColor();
         }
 
+        /// <summary>
+        /// Writes the failed assertions to the console in red, filtering out passed assertions.
+        /// </summary>
+        /// <param name="assertions">The assertions to filter and display.</param>
         public void WriteFailedAssertions(Assertion[] assertions)
         {
             Assertion[] failedAssertions = assertions.Where(a => !a.Passed).ToArray();
@@ -62,6 +75,10 @@ namespace Bam.Test
             }
         }
 
+        /// <summary>
+        /// Writes the passed assertions to the console in green, filtering out failed assertions.
+        /// </summary>
+        /// <param name="assertions">The assertions to filter and display.</param>
         public void WritePassedAssertions(Assertion[] assertions)
         {
             Assertion[] passedAssertions = assertions.Where(x => x.Passed).ToArray();

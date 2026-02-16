@@ -8,17 +8,36 @@ using Bam.Console;
 
 namespace Bam.Test.Data
 {
+    /// <summary>
+    /// Represents a persisted test result record, storing test method details, pass/fail status,
+    /// and any exception information.
+    /// </summary>
     public class TestResult : AuditRepoData
     {
+        /// <summary>
+        /// Initializes a new instance with default values and TestType set to Unit.
+        /// </summary>
         public TestResult() : base()
         {
             TestType = Test.TestType.Unit.ToString();
         }
+
+        /// <summary>
+        /// Initializes a new instance with the specified description and pass status.
+        /// </summary>
+        /// <param name="description">The description of the test.</param>
+        /// <param name="passed">Whether the test passed.</param>
         public TestResult(string description, bool passed) : this()
         {
             Description = description;
             Passed = passed;
         }
+
+        /// <summary>
+        /// Initializes a new instance from a console method, marking it as passed.
+        /// </summary>
+        /// <param name="cim">The console method representing the test.</param>
+        /// <param name="testType">The type of test (defaults to Unit).</param>
         public TestResult(ConsoleMethod cim, TestType testType = Test.TestType.Unit) : this()
         {
             MethodInfo method = cim.Method;
@@ -28,6 +47,12 @@ namespace Bam.Test.Data
             Passed = true;
             TestType = testType.ToString();
         }
+
+        /// <summary>
+        /// Initializes a new instance from a test exception event, marking it as failed
+        /// and recording the exception details.
+        /// </summary>
+        /// <param name="args">The test exception event args containing the test method and exception.</param>
         public TestResult(TestExceptionEventArgs args)
             : this(args.TestMethod)
         {
@@ -36,6 +61,9 @@ namespace Bam.Test.Data
             StackTrace = args.Exception.StackTrace;
         }
 
+        /// <summary>
+        /// Gets or sets the type of test (e.g., "Unit", "Integration", "Specification").
+        /// </summary>
         public string TestType { get; set; }
         /// <summary>
         /// Boolean indicating whether the test passed

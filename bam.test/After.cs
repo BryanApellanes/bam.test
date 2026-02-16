@@ -23,6 +23,12 @@ namespace Bam.Test
             return testCaseRegistryInstance;
         }
 
+        /// <summary>
+        /// Instantiates the TestCaseRegistry for a test and passes it to the specified async setup function,
+        /// blocking until the setup completes.
+        /// </summary>
+        /// <param name="setup">An async function that configures the TestCaseRegistry and returns it.</param>
+        /// <returns>The configured TestCaseRegistry instance.</returns>
         public static TestCaseRegistry Setup(Func<TestCaseRegistry, Task<TestCaseRegistry>> setup)
         {
             TestCaseRegistry testCaseRegistryInstance = new TestCaseRegistry();

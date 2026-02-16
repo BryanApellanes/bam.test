@@ -17,38 +17,90 @@ namespace Bam.Test
             Set<IBecauseWriter>(new ConsoleBecauseWriter());
         }
 
+        /// <summary>
+        /// Gets or sets a description for this test case registry.
+        /// </summary>
         public string Description { get; set; }
-        
+
+        /// <summary>
+        /// Creates a test case that executes the specified action on the object under test of type T.
+        /// </summary>
+        /// <typeparam name="T">The type of the object under test.</typeparam>
+        /// <param name="actionDescription">A description of the action being tested.</param>
+        /// <param name="test">The action to execute on the object under test.</param>
+        /// <returns>A new <see cref="TestCase{T}"/>.</returns>
         public TestCase<T> When<T>(string actionDescription, Action<T> test)
         {
             return new TestCase<T>(this, GetActionDescription<T>(actionDescription), test);
         }
         
+        /// <summary>
+        /// Creates a test case that executes the specified action on the object under test and the registry.
+        /// </summary>
+        /// <typeparam name="T">The type of the object under test.</typeparam>
+        /// <param name="actionDescription">A description of the action being tested.</param>
+        /// <param name="test">The action to execute, receiving both the object under test and this registry.</param>
+        /// <returns>A new <see cref="TestCase{T}"/>.</returns>
         public TestCase<T> When<T>(string actionDescription, Action<T, TestCaseRegistry> test)
         {
             return new TestCase<T>(this, GetActionDescription<T>(actionDescription), test);
         }
-        
+
+        /// <summary>
+        /// Creates a test case that executes the specified function on the object under test and the registry, returning a result.
+        /// </summary>
+        /// <typeparam name="T">The type of the object under test.</typeparam>
+        /// <param name="actionDescription">A description of the action being tested.</param>
+        /// <param name="test">The function to execute, returning a result value.</param>
+        /// <returns>A new <see cref="TestCase{T}"/>.</returns>
         public TestCase<T> When<T>(string actionDescription, Func<T, TestCaseRegistry, object> test)
         {
             return new TestCase<T>(this, GetActionDescription<T>(actionDescription), test);
         }
-        
+
+        /// <summary>
+        /// Creates an async test case that executes the specified async function on the object under test.
+        /// </summary>
+        /// <typeparam name="T">The type of the object under test.</typeparam>
+        /// <param name="actionDescription">A description of the action being tested.</param>
+        /// <param name="asyncTest">The async function to execute.</param>
+        /// <returns>A new <see cref="AsyncTestCase{T}"/>.</returns>
         public TestCase<T> When<T>(string actionDescription, Func<T, Task> asyncTest)
         {
             return new AsyncTestCase<T>(this, GetActionDescription<T>(actionDescription), asyncTest);
         }
-        
+
+        /// <summary>
+        /// Creates an async test case that executes the specified async function on the object under test and the registry.
+        /// </summary>
+        /// <typeparam name="T">The type of the object under test.</typeparam>
+        /// <param name="actionDescription">A description of the action being tested.</param>
+        /// <param name="asyncTest">The async function to execute.</param>
+        /// <returns>A new <see cref="AsyncTestCase{T}"/>.</returns>
         public TestCase<T> When<T>(string actionDescription, Func<T, TestCaseRegistry, Task> asyncTest)
         {
             return new AsyncTestCase<T>(this, GetActionDescription<T>(actionDescription), asyncTest);
         }
-        
+
+        /// <summary>
+        /// Creates an async test case that executes the specified async function returning a result.
+        /// </summary>
+        /// <typeparam name="T">The type of the object under test.</typeparam>
+        /// <param name="actionDescription">A description of the action being tested.</param>
+        /// <param name="asyncTest">The async function to execute, returning a result value.</param>
+        /// <returns>A new <see cref="AsyncTestCase{T}"/>.</returns>
         public TestCase<T> When<T>(string actionDescription, Func<T, Task<object>> asyncTest)
         {
             return new AsyncTestCase<T>(this, GetActionDescription<T>(actionDescription), asyncTest);
         }
 
+        /// <summary>
+        /// Creates an async test case that executes the specified async function with registry access, returning a result.
+        /// </summary>
+        /// <typeparam name="T">The type of the object under test.</typeparam>
+        /// <param name="actionDescription">A description of the action being tested.</param>
+        /// <param name="asyncTest">The async function to execute, returning a result value.</param>
+        /// <returns>A new <see cref="AsyncTestCase{T}"/>.</returns>
         public TestCase<T> When<T>(string actionDescription, Func<T, TestCaseRegistry, Task<object>> asyncTest)
         {
             return new AsyncTestCase<T>(this, GetActionDescription<T>(actionDescription), asyncTest);
