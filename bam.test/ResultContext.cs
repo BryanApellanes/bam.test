@@ -16,7 +16,7 @@ public class ResultContext<T> : ResultContext
     public new T Result
     {
         get => (T)base.Result;
-        set => base.Result = value;
+        set => base.Result = value!;
     }
 }
 

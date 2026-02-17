@@ -24,15 +24,15 @@ namespace Bam.Test.Specification
         public ServiceRegistry SpecTestRegistry { get; set; }
         internal FeatureContext FeatureContext { get; set; }
         internal ScenarioContext ScenarioContext { get; set; }
-        internal TestReporter TestResults;
+        internal TestReporter TestResults = null!;
 
-        FeatureContextSetup _currentFeatureSetupContext;
-        ScenarioSetupContext _currentScenarioContextSetup;
+        FeatureContextSetup _currentFeatureSetupContext = null!;
+        ScenarioSetupContext _currentScenarioContextSetup = null!;
 
         public virtual void Setup() { }
         public virtual void TearDown() { }
 
-        public virtual ILogger Logger { get; set; }
+        public virtual ILogger Logger { get; set; } = null!;
         
         public void RunSpecTest(SpecTestContainer container, SpecTestMethod testMethod)
         {

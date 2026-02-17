@@ -6,7 +6,7 @@ namespace Bam.Test.Specification
     public class SpecTestRunner : TestRunner<SpecTestMethod>
     {
         readonly Dictionary<Type, SpecTestContainer> _specContainers;
-        public SpecTestRunner(Assembly assembly, ILogger logger = null) : base(assembly, new SpecTestMethodProvider { Assembly = assembly }, logger)
+        public SpecTestRunner(Assembly assembly, ILogger logger = null!) : base(assembly, new SpecTestMethodProvider { Assembly = assembly }, logger)
         {
             SetupMethodProvider = new SpecTestSetupMethodProvider();
             TeardownMethodProvider = new SpecTestTeardownMethodProvider();
@@ -16,7 +16,7 @@ namespace Bam.Test.Specification
         public override void RunTest(TestMethod test)
         {
             MethodInfo testMethod = test.Method;
-            Type containerType = testMethod.DeclaringType;
+            Type containerType = testMethod.DeclaringType!;
             SpecTestContainer specContainer = GetContainer(test);
             specContainer.Setup();
             specContainer.RunSpecTest(specContainer, (SpecTestMethod)test);
@@ -27,11 +27,11 @@ namespace Bam.Test.Specification
         private SpecTestContainer GetContainer(TestMethod test)
         {
             Type? type = test.Method.DeclaringType;
-            if (!_specContainers.ContainsKey(type))
+            if (!_specContainers.ContainsKey(type!))
             {
-                _specContainers.Add(type, type.Construct<SpecTestContainer>());
+                _specContainers.Add(type!, type!.Construct<SpecTestContainer>());
             }
-            return _specContainers[type];
+            return _specContainers[type!];
         }
     }
 }

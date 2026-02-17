@@ -31,15 +31,15 @@ namespace Bam.Test
         }
 
         protected string FullyQualifiedMethodName { get; set; }
-        public string AssemblyPath { get; set; }
-        public string TypeIdentifier { get; set; }
-        public string MethodIdentifier { get; set; }
+        public string AssemblyPath { get; set; } = null!;
+        public string TypeIdentifier { get; set; } = null!;
+        public string MethodIdentifier { get; set; } = null!;
 
         public MethodInfo ToMethodInfo()
         {
             Assembly assembly = Assembly.LoadFile(AssemblyPath);
             Type? type = assembly.GetTypes().FirstOrDefault(type => type.Name.Equals(TypeIdentifier));
-            MethodInfo method = type?.GetMethod(MethodIdentifier);
+            MethodInfo method = type?.GetMethod(MethodIdentifier)!;
             return method;
         }
 

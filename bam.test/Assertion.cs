@@ -12,7 +12,7 @@ namespace Bam.Test
         /// <summary>
         /// Gets or sets the partial message to display if the assertion passes.
         /// </summary>
-        public string SuccessMessage { get; set; }
+        public string SuccessMessage { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets a boolean value indicating whether the assertion

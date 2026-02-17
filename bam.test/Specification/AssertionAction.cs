@@ -2,8 +2,8 @@
 {
     public class AssertionAction : Assertion
     {
-        public string ShouldDescription { get; set; }
-        public Action Action { get; set; }
+        public string ShouldDescription { get; set; } = null!;
+        public Action Action { get; set; } = null!;
         public virtual AssertionAction Execute()
         {
             try

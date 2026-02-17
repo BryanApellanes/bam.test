@@ -9,8 +9,8 @@ namespace Bam.Test
         {
             Tests = new List<TestMethod>();
         }
-        public Assembly Assembly { get; set; }
-        public ITestRunner<TTestMethod> TestRunner { get; set; }
+        public Assembly Assembly { get; set; } = null!;
+        public ITestRunner<TTestMethod> TestRunner { get; set; } = null!;
         public List<TestMethod> Tests { get; set; }
     }
 }

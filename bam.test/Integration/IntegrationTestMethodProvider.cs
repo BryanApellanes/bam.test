@@ -6,7 +6,7 @@ namespace Bam.Test.Integration
         {
         }
 
-        public override List<IntegrationTestMethod> GetTests(string testGroup = null)
+        public override List<IntegrationTestMethod> GetTests(string? testGroup = null)
         {
             return string.IsNullOrEmpty(testGroup)
                 ? IntegrationTestMethod.FromAssembly(Assembly)

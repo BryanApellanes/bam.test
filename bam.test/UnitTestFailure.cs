@@ -17,7 +17,7 @@ namespace Bam.Test
             this.CopyProperties(testExceptionEventArgs);
         }
 
-        public Exception Exception { get; set; }
-        public TestMethod TestMethod { get; set; }
+        public Exception Exception { get; set; } = null!;
+        public TestMethod TestMethod { get; set; } = null!;
     }
 }

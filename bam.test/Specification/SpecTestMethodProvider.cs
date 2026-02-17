@@ -4,7 +4,7 @@
     {
         public SpecTestMethodProvider() { }
 
-        public override List<SpecTestMethod> GetTests(string testGroup = null)
+        public override List<SpecTestMethod> GetTests(string? testGroup = null)
         {
             return SpecTestMethod.FromAssembly(Assembly);
         }

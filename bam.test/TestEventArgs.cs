@@ -17,20 +17,20 @@ namespace Bam.Test
         /// <summary>
         /// Gets or sets the test runner that raised the event.
         /// </summary>
-        public ITestRunner<TTestMethod> TestRunner { get; set; }
+        public ITestRunner<TTestMethod> TestRunner { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets the test method associated with the event.
         /// </summary>
-        public ConsoleMethod Test { get; set; }
+        public ConsoleMethod Test { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets the assembly containing the tests.
         /// </summary>
-        public Assembly Assembly { get; set; }
+        public Assembly Assembly { get; set; } = null!;
         /// <summary>
         /// The tag to associate with a TestExecution
         /// </summary>
-        public string Tag { get; set; }
+        public string Tag { get; set; } = null!;
     }
 }

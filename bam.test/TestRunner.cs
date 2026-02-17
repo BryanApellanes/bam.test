@@ -38,7 +38,7 @@ namespace Bam.Test
             AttachAfterHandlers();
         }
 
-        public static ITestRunner<TTestMethod> Create(Assembly assembly, ILogger logger = null)
+        public static ITestRunner<TTestMethod> Create(Assembly assembly, ILogger logger = null!)
         {
             if (!_factory.ContainsKey(typeof(TTestMethod)))
             {
@@ -47,36 +47,36 @@ namespace Bam.Test
             return _factory[typeof(TTestMethod)](assembly, logger);
         }
 
-        public string Tag { get; set; }
+        public string Tag { get; set; } = null!;
 
-        public event EventHandler TestIgnored;
+        public event EventHandler TestIgnored = null!;
 
-        public event EventHandler TestPassed;
-        public event EventHandler TestFailed;
+        public event EventHandler TestPassed = null!;
+        public event EventHandler TestFailed = null!;
 
-        public event EventHandler TestsStarting;
-        public event EventHandler TestsFinished;
-        public event EventHandler TestStarting;
-        public event EventHandler TestFinished;
+        public event EventHandler TestsStarting = null!;
+        public event EventHandler TestsFinished = null!;
+        public event EventHandler TestStarting = null!;
+        public event EventHandler TestFinished = null!;
 
-        public event EventHandler TestsDiscovered;
-        public event EventHandler NoTestsDiscovered;
+        public event EventHandler TestsDiscovered = null!;
+        public event EventHandler NoTestsDiscovered = null!;
 
-        public event EventHandler InvalidTestNumberSpecified;
+        public event EventHandler InvalidTestNumberSpecified = null!;
 
-        public Action<Exception> BeforeAllExceptionHandler { get; set; }
-        public Action<Exception> BeforeEachExceptionHandler { get; set; }
+        public Action<Exception> BeforeAllExceptionHandler { get; set; } = null!;
+        public Action<Exception> BeforeEachExceptionHandler { get; set; } = null!;
 
-        public Action<Exception> AfterAllExceptionHandler { get; set; }
-        public Action<Exception> AfterEachExceptionHandler { get; set; }
+        public Action<Exception> AfterAllExceptionHandler { get; set; } = null!;
+        public Action<Exception> AfterEachExceptionHandler { get; set; } = null!;
 
         public TestRunnerSummary TestSummary { get; set; }
 
         public TestMethodProvider<TTestMethod> TestMethodProvider { get; set; }
 
-        public ISetupMethodProvider SetupMethodProvider { get; set; }
+        public ISetupMethodProvider SetupMethodProvider { get; set; } = null!;
 
-        public ITeardownMethodProvider TeardownMethodProvider { get; set; }
+        public ITeardownMethodProvider TeardownMethodProvider { get; set; } = null!;
 
         public bool IsolateMethodCalls { get; set; }
         public void RunAllTests()
@@ -227,7 +227,7 @@ namespace Bam.Test
 
         protected TestEventArgs<TTestMethod> FireTestStarting(TestMethod test)
         {
-            TestEventArgs<TTestMethod> args = new TestEventArgs<TTestMethod> { Test = test, TestRunner = this, Tag = Tag, Assembly = test.Method.DeclaringType.Assembly };
+            TestEventArgs<TTestMethod> args = new TestEventArgs<TTestMethod> { Test = test, TestRunner = this, Tag = Tag, Assembly = test.Method.DeclaringType!.Assembly };
             FireEvent(TestStarting, args);
             return args;
         }
@@ -244,7 +244,7 @@ namespace Bam.Test
         [DebuggerStepThrough]
         protected internal static void InvokeTest(ConsoleMethod consoleMethod, bool isolateMethodCalls = true)
         {
-            MethodInfo invokeTarget = typeof(ConsoleMethod).GetMethod("Invoke");
+            MethodInfo invokeTarget = typeof(ConsoleMethod).GetMethod("Invoke")!;
             if (consoleMethod.Method.IsStatic)
             {
                 // TODO: implement isolation as a separate process runner
@@ -260,7 +260,7 @@ namespace Bam.Test
             }
             else
             {
-                string typeName = consoleMethod.Method.DeclaringType.Name;
+                string typeName = consoleMethod.Method.DeclaringType!.Name;
                 ConstructorInfo? ctor = consoleMethod.Method.DeclaringType.GetConstructor(Type.EmptyTypes);
                 if (ctor != null)
                 {

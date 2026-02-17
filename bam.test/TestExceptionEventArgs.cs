@@ -30,11 +30,11 @@ namespace Bam.Test
         /// <summary>
         /// Gets or sets the exception that caused the test failure.
         /// </summary>
-        public Exception Exception { get; set; }
+        public Exception Exception { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets the test method that failed.
         /// </summary>
-        public TestMethod TestMethod { get; set; }
+        public TestMethod TestMethod { get; set; } = null!;
     }
 }

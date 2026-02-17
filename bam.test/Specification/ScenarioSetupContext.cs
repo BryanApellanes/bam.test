@@ -9,7 +9,7 @@ namespace Bam.Test.Specification
     {
         Queue<ScenarioSetupAction> _setupActions;
         Queue<ThenAction> _assertionActions;
-        public ScenarioSetupContext(string scenario, Action setupScenario, ILogger logger = null)
+        public ScenarioSetupContext(string scenario, Action setupScenario, ILogger logger = null!)
         {
             Description = scenario;
             SetupAction = setupScenario;
@@ -18,12 +18,12 @@ namespace Bam.Test.Specification
             Logger = logger;
         }
 
-        public FeatureContext FeatureContext { get; set; }
-        public FeatureContextSetup CurrentFeature { get; set; }
-        public SpecTestContainer SpecTestContainer { get; set; }
-        public ILogger Logger { get; set; }
+        public FeatureContext FeatureContext { get; set; } = null!;
+        public FeatureContextSetup CurrentFeature { get; set; } = null!;
+        public SpecTestContainer SpecTestContainer { get; set; } = null!;
+        public ILogger Logger { get; set; } = null!;
 
-        ItContext _assertionContext;
+        ItContext _assertionContext = null!;
         object _assertionContextLock = new object();
         public ItContext AssertionContext
         {
@@ -33,7 +33,7 @@ namespace Bam.Test.Specification
             }
         }
 
-        public WhenAction TestAction { get; set; }
+        public WhenAction TestAction { get; set; } = null!;
 
         public ScenarioSetupContext Given(string given, Action givenAction)
         {
@@ -63,32 +63,32 @@ namespace Bam.Test.Specification
             return this;
         }
 
-        public EventHandler ScenarioExecuting;
-        public EventHandler ScenarioSetup;
-        public EventHandler ScenarioSetupFailed;
+        public EventHandler ScenarioExecuting = null!;
+        public EventHandler ScenarioSetup = null!;
+        public EventHandler ScenarioSetupFailed = null!;
 
-        public EventHandler ScenarioSetupStep;
-        public EventHandler ScenarioSetupStepFailed;
+        public EventHandler ScenarioSetupStep = null!;
+        public EventHandler ScenarioSetupStepFailed = null!;
 
-        public EventHandler ScenarioTest;
-        public EventHandler ScenarioTestFailed;
+        public EventHandler ScenarioTest = null!;
+        public EventHandler ScenarioTestFailed = null!;
 
-        public EventHandler AssertionPassed;
-        public EventHandler AssertionFailed;
+        public EventHandler AssertionPassed = null!;
+        public EventHandler AssertionFailed = null!;
 
-        public EventHandler ScenarioExecuted;
+        public EventHandler ScenarioExecuted = null!;
 
         public bool Execute()
         {
             FireEvent(ScenarioExecuting, new SpecTestEventArgs { ScenarioSetupContext = this, TestAction = TestAction });
-            TestReporter reporter = SpecTestContainer.GetReporter();
+            TestReporter reporter = SpecTestContainer.GetReporter()!;
             if (!TrySetup())
             {
-                reporter.AddWarningMessage("Failed to setup scenario: ({0})", Description);
+                reporter!.AddWarningMessage("Failed to setup scenario: ({0})", Description);
                 FireEvent(ScenarioSetupFailed, new SpecTestEventArgs { ScenarioSetupContext = this, TestAction = TestAction });
                 return false;
             }
-            reporter.AddMessage("Scenario: {0}", Description);
+            reporter!.AddMessage("Scenario: {0}", Description);
             FireEvent(ScenarioSetup, new SpecTestEventArgs { ScenarioSetupContext = this, TestAction = TestAction });
             while (_setupActions.Count > 0)
             {

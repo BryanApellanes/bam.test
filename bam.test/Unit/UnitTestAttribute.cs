@@ -26,6 +26,6 @@ namespace Bam.Test.Unit
 
         public bool Ignore => !string.IsNullOrEmpty(IgnoreBecause);
 
-        public string IgnoreBecause { get; set; }
+        public string IgnoreBecause { get; set; } = null!;
     }
 }

@@ -18,6 +18,6 @@ namespace Bam.Test
         {
         }
 
-        public string Tag { get; set; }
+        public string Tag { get; set; } = null!;
     }
 }

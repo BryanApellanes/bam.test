@@ -12,15 +12,15 @@ namespace Bam.Test.Unit
         public UnitTestRunListener()
         {
         }
-        public IRepository Repository { get; set; }
+        public IRepository Repository { get; set; } = null!;
 
-        public override void TestFailed(object sender, TestExceptionEventArgs args)
+        public override void TestFailed(object? sender, TestExceptionEventArgs args)
         {
             TestResult result = new TestResult(args);
             Repository.Save(result);
         }
 
-        public override void TestPassed(object sender, TestEventArgs<UnitTestMethod> args)
+        public override void TestPassed(object? sender, TestEventArgs<UnitTestMethod> args)
         {
             TestResult result = new TestResult(args.Test);
             Repository.Save(result);

@@ -8,7 +8,7 @@ namespace Bam.Test
         TestMethod _testMethod;
         ILogger _logger;
 
-        public TestMethodRunner(TestRunner<T> runner, TestMethod testMethod, ILogger logger = null) 
+        public TestMethodRunner(TestRunner<T> runner, TestMethod testMethod, ILogger logger = null!)
         {
             this._runner = runner;
             this._testMethod = testMethod;

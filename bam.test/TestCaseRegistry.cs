@@ -20,7 +20,7 @@ namespace Bam.Test
         /// <summary>
         /// Gets or sets a description for this test case registry.
         /// </summary>
-        public string Description { get; set; }
+        public string Description { get; set; } = null!;
 
         /// <summary>
         /// Creates a test case that executes the specified action on the object under test of type T.
@@ -156,7 +156,7 @@ namespace Bam.Test
         {
             get;
             set;
-        }
+        } = null!;
 
         internal static string GetActionDescription<T>(string actionDescription)
         {

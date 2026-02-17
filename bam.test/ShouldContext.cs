@@ -21,7 +21,7 @@ public class ShouldContext
     /// </summary>
     public string TestSummary { get; set; }
 
-    AfterContext _afterContext;
+    AfterContext _afterContext = null!;
     /// <summary>
     /// Gets the AfterContext for configuring test setup via a fluent interface.
     /// </summary>
@@ -38,7 +38,7 @@ public class ShouldContext
         }
     }
     
-    private WhenContext _when;
+    private WhenContext _when = null!;
     /// <summary>
     /// Gets the WhenContext for defining the test action via a fluent interface.
     /// </summary>

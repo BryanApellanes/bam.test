@@ -15,11 +15,11 @@ namespace Bam.Test
         protected readonly Because _because;
         protected Because<T> _testCaseBecause;
         protected readonly TestCaseRegistry _testCaseRegistry;
-        readonly Action<T> _testMethod;
-        readonly Action<T, TestCaseRegistry> _altTestMethod;
-        
-        readonly Func<T, object> _outputAction;
-        readonly Func<T, TestCaseRegistry, object> _altOutputAction;
+        readonly Action<T> _testMethod = null!;
+        readonly Action<T, TestCaseRegistry> _altTestMethod = null!;
+
+        readonly Func<T, object> _outputAction = null!;
+        readonly Func<T, TestCaseRegistry, object> _altOutputAction = null!;
 
         internal TestCase(TestCaseRegistry testCaseRegistry, string testDescription)
         {
@@ -27,10 +27,10 @@ namespace Bam.Test
             _testCaseRegistry = testCaseRegistry;
             _because = new Because(testDescription, testCaseRegistry);
             _testCaseBecause = new Because<T>(_because, this);
-            _testMethod = null;//(o) => { };
-            _altTestMethod = null;//(o, c) => { };
-            _outputAction = null;// (o) => o;
-            _altOutputAction = null;//(o, c) => null;
+            _testMethod = null!;//(o) => { };
+            _altTestMethod = null!;//(o, c) => { };
+            _outputAction = null!;// (o) => o;
+            _altOutputAction = null!;//(o, c) => null;
         }
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace Bam.Test
             _altOutputAction = altOutputAction;
         }
 
-        public string Summary { get; set; }
+        public string Summary { get; set; } = null!;
         public string Description { get; init; }
         /// <summary>
         /// Causes the test case to run, same as It.

@@ -11,7 +11,7 @@ namespace Bam.Test.Specification
             Scenarios = new Queue<ScenarioSetupContext>();
         }
         public Queue<ScenarioSetupContext> Scenarios { get; set; }
-        public ScenarioSetupContext CurrentScenario { get; set; }
+        public ScenarioSetupContext CurrentScenario { get; set; } = null!;
 
         public ScenarioSetupContext AddScenario(string scenarioDescription, Action scenarioSetup)
         {

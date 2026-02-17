@@ -43,7 +43,7 @@ namespace Bam.Test.Data
             MethodInfo method = cim.Method;
             MethodName = method.Name;
             Description = cim.Information;
-            AssemblyFullName = method.DeclaringType.Assembly.FullName;
+            AssemblyFullName = method.DeclaringType!.Assembly.FullName!;
             Passed = true;
             TestType = testType.ToString();
         }
@@ -58,7 +58,7 @@ namespace Bam.Test.Data
         {
             Passed = false;
             Exception = args.Exception.Message;
-            StackTrace = args.Exception.StackTrace;
+            StackTrace = args.Exception.StackTrace!;
         }
 
         /// <summary>
@@ -72,22 +72,22 @@ namespace Bam.Test.Data
         /// <summary>
         /// The name of the test method 
         /// </summary>
-		public string MethodName { get; set; }
+		public string MethodName { get; set; } = null!;
         /// <summary>
         /// The information value of the test method if any
         /// </summary>
-		public string Description { get; set; }
+		public string Description { get; set; } = null!;
         /// <summary>
         /// The full name of the assembly the test was in
         /// </summary>
-		public string AssemblyFullName { get; set; }
+		public string AssemblyFullName { get; set; } = null!;
         /// <summary>
         /// The exception message if any
         /// </summary>
-		public string Exception { get; set; }
+		public string Exception { get; set; } = null!;
         /// <summary>
         /// The stack trace if any
         /// </summary>
-		public string StackTrace { get; set; }
+		public string StackTrace { get; set; } = null!;
     }
 }

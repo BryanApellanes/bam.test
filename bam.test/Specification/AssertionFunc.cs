@@ -2,8 +2,8 @@
 {
     public class AssertionFunc<T> : AssertionAction
     {
-        public Func<ItContext, T> Func { get; set; }
-        public T Result { get; set; }
+        public Func<ItContext, T> Func { get; set; } = null!;
+        public T Result { get; set; } = default!;
         public virtual AssertionAction Execute(ItContext context)
         {
             try

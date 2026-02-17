@@ -12,9 +12,9 @@ namespace Bam.Test.Specification
             Assertions = new List<Assertion>();
         }
 
-        public object AssertionTarget { get; set; }
+        public object AssertionTarget { get; set; } = null!;
         protected internal List<Assertion> Assertions { get; set; }
-        protected ServiceRegistry SpecificationTestRegistry { get; set; }
+        protected ServiceRegistry SpecificationTestRegistry { get; set; } = null!;
 
         public ItContext It(object target)
         {
@@ -64,7 +64,7 @@ namespace Bam.Test.Specification
 
         public ItContext IsA<T>()
         {
-            string target = AssertionTarget == null ? "[null]" : AssertionTarget.ToString();
+            string target = AssertionTarget == null ? "[null]" : AssertionTarget.ToString()!;
             if (AssertionTarget is T)
             {
                 AddSuccess($"{target} is a {typeof(T).Name}");
@@ -81,11 +81,11 @@ namespace Bam.Test.Specification
             return Be(compareTo);
         }
 
-        public ItContext IsEqualTo(object compareTo, string successMessage = null)
+        public ItContext IsEqualTo(object compareTo, string? successMessage = null)
         {
-            string target = AssertionTarget == null ? "[null]" : AssertionTarget.ToString();
-            string compare = compareTo == null ? "[null]" : compareTo.ToString();
-            if (AssertionTarget.Equals(compareTo))
+            string target = AssertionTarget == null ? "[null]" : AssertionTarget.ToString()!;
+            string compare = compareTo == null ? "[null]" : compareTo.ToString()!;
+            if (AssertionTarget!.Equals(compareTo))
             {
                 AddSuccess(successMessage ?? $"{target} equals {compare}");
             }
@@ -96,7 +96,7 @@ namespace Bam.Test.Specification
             return this;
         }
 
-        public ItContext IsTrue(string message = null)
+        public ItContext IsTrue(string? message = null)
         {
             if ((bool)AssertionTarget == true)
             {

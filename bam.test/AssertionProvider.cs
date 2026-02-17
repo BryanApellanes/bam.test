@@ -26,7 +26,7 @@ namespace Bam.Test
         /// <param name="because">The Because object used for tracking assertions.</param>
         /// <param name="wrapped">The object to wrap, cast to T.</param>
         /// <param name="name">An optional display name for the wrapped value.</param>
-        public AssertionProvider(Because because, object wrapped, string name = null) : base(because, wrapped, name)
+        public AssertionProvider(Because because, object wrapped, string name = null!) : base(because, wrapped, name)
         {
             Value = (T)wrapped;
         }
@@ -37,7 +37,7 @@ namespace Bam.Test
         /// <param name="because">The Because object used for tracking assertions.</param>
         /// <param name="wrapped">The value to wrap.</param>
         /// <param name="name">An optional display name for the wrapped value.</param>
-        public AssertionProvider(Because because, T wrapped, string name = null) : base(because, wrapped, name)
+        public AssertionProvider(Because because, T wrapped, string name = null!) : base(because, wrapped!, name)
         {
             Value = wrapped;
         }
@@ -62,7 +62,7 @@ namespace Bam.Test
         /// <param name="because">The Because object used for tracking assertions.</param>
         /// <param name="wrapped">The object to wrap.</param>
         /// <param name="name">An optional display name for the wrapped value; defaults to "the value".</param>
-        public AssertionProvider(Because because, object wrapped, string name = null)
+        public AssertionProvider(Because because, object wrapped, string name = null!)
         {
             Value = wrapped;
             Because = because;

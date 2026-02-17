@@ -292,7 +292,7 @@ namespace Bam.Test
                 new Assertion
                 {
                     Passed = true,
-                    SuccessMessage = $"I'll inspect the properties:\r\n{obj.PropertiesToString()}"
+                    SuccessMessage = $"I'll inspect the properties:\r\n{obj!.PropertiesToString()}"
                 });
         }
 
@@ -333,7 +333,7 @@ namespace Bam.Test
         /// <summary>
         /// The return value of the test method execution
         /// </summary>        
-        public object Result { get; set; }
+        public object Result { get; set; } = null!;
 
         bool _testIsDone;
         internal Because TestIsDone

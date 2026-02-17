@@ -2,11 +2,11 @@
 
 public class AsyncTestCase<T> : TestCase<T>
 {
-    readonly Func<T, Task> _asyncTestMethod;
-    readonly Func<T, TestCaseRegistry, Task> _altAsyncTestMethod;
-    
-    readonly Func<T, Task<object>> _outputAsyncTestMethod;
-    readonly Func<T, TestCaseRegistry, Task<object>> _altOutputAsyncTestMethod;
+    readonly Func<T, Task> _asyncTestMethod = null!;
+    readonly Func<T, TestCaseRegistry, Task> _altAsyncTestMethod = null!;
+
+    readonly Func<T, Task<object>> _outputAsyncTestMethod = null!;
+    readonly Func<T, TestCaseRegistry, Task<object>> _altOutputAsyncTestMethod = null!;
     
     internal AsyncTestCase(TestCaseRegistry testCaseRegistry, string testDescription) : base(testCaseRegistry, testDescription)
     {
@@ -69,8 +69,8 @@ public class AsyncTestCase<T> : TestCase<T>
                             tasks.Add(_altAsyncTestMethod(objectUnderTest, _testCaseRegistry));
                         }
 
-                        Task<object> outputTask = null;
-                        Task<object> altOutputTask = null;
+                        Task<object>? outputTask = null;
+                        Task<object>? altOutputTask = null;
                         if (_outputAsyncTestMethod != null)
                         {
                             outputTask = _outputAsyncTestMethod(objectUnderTest);

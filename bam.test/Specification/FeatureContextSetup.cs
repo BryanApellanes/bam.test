@@ -18,7 +18,7 @@ namespace Bam.Test.Specification
         {
             try
             {
-                T featureArg = default;
+                T featureArg = default!;
                 if (SpecTestContainer != null)
                 {
                     featureArg = SpecTestContainer.SpecTestRegistry.Get<T>();
@@ -56,6 +56,6 @@ namespace Bam.Test.Specification
         /// <value>
         /// The specification container.
         /// </value>
-        protected internal SpecTestContainer SpecTestContainer { get; set; }
+        protected internal SpecTestContainer SpecTestContainer { get; set; } = null!;
     }
 }

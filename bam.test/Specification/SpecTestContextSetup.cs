@@ -4,8 +4,8 @@ namespace Bam.Test.Specification
 {
     public abstract class SpecTestContextSetup : Loggable, ISpecTestContextSetupAction
     {
-        public string Description { get; set; }
-        public Action SetupAction { get; set; }
+        public string Description { get; set; } = null!;
+        public Action SetupAction { get; set; } = null!;
 
         public virtual bool TrySetup()
         {
