@@ -84,4 +84,91 @@ public class TestCaseShould : UnitTestMenuContainer
         .SoBeHappy()
         .UnlessItFailed();
     }
+
+    [UnitTest]
+    public void PassTypedResultToTypedShouldPass()
+    {
+        string expected = 32.RandomLetters();
+
+        When.A<TestData>("returns a string result for typed validation", (td) => expected)
+            .TheTest
+            .ShouldPass<string>((because, result) =>
+            {
+                because.ItsTrue("the typed result is not null", result != null);
+                because.ItsTrue("the typed result is the expected value", expected.Equals(result));
+                because.TheObjectUnderTest.IsNotNull();
+            })
+            .SoBeHappy()
+            .UnlessItFailed();
+    }
+
+    [UnitTest]
+    public void TrackExceptionThrownInTypedShouldPass()
+    {
+        string exceptionMessage = 32.RandomLetters();
+
+        When.A<TestData>("captures an exception thrown during typed result validation", (td) =>
+        {
+            Because? innerBecause = null;
+            bool exceptionEscaped = false;
+            try
+            {
+                When.A<TestData>("returns a string result", (inner) => "the result")
+                    .TheTest
+                    .ShouldPass<string>((because, result) =>
+                    {
+                        innerBecause = because;
+                        throw new Exception(exceptionMessage);
+                    });
+            }
+            catch (Exception)
+            {
+                exceptionEscaped = true;
+            }
+            bool failureWasTracked = innerBecause != null && innerBecause.Assertions.Any(a => !a.Passed && (a.FailureMessage ?? string.Empty).Contains(exceptionMessage));
+            return new TypedShouldPassExceptionOutcome(exceptionEscaped, failureWasTracked);
+        })
+        .TheTest
+        .ShouldPass<TypedShouldPassExceptionOutcome>((because, outcome) =>
+        {
+            because.ItsFalse("the exception did not escape ShouldPass", outcome.ExceptionEscaped);
+            because.ItsTrue("the exception was tracked as a failed assertion", outcome.FailureWasTracked);
+        })
+        .SoBeHappy()
+        .UnlessItFailed();
+    }
+
+    [UnitTest]
+    public void TrackResultTypeMismatchInTypedShouldPass()
+    {
+        When.A<TestData>("captures an invalid cast when the typed result type does not match", (td) =>
+        {
+            TestCase<TestData> innerTestCase = When.A<TestData>("returns a string result", (inner) => "not an int").TheTest;
+            bool lambdaWasInvoked = false;
+            bool exceptionEscaped = false;
+            try
+            {
+                innerTestCase.ShouldPass<int>((because, result) => { lambdaWasInvoked = true; });
+            }
+            catch (Exception)
+            {
+                exceptionEscaped = true;
+            }
+            bool failureWasTracked = innerTestCase.GetResult().Assertions.Any(a => !a.Passed);
+            return new TypedShouldPassMismatchOutcome(exceptionEscaped, lambdaWasInvoked, failureWasTracked);
+        })
+        .TheTest
+        .ShouldPass<TypedShouldPassMismatchOutcome>((because, outcome) =>
+        {
+            because.ItsFalse("the invalid cast did not escape ShouldPass", outcome.ExceptionEscaped);
+            because.ItsFalse("the assert lambda was not invoked", outcome.LambdaWasInvoked);
+            because.ItsTrue("the invalid cast was tracked as a failed assertion", outcome.FailureWasTracked);
+        })
+        .SoBeHappy()
+        .UnlessItFailed();
+    }
+
+    private sealed record TypedShouldPassExceptionOutcome(bool ExceptionEscaped, bool FailureWasTracked);
+
+    private sealed record TypedShouldPassMismatchOutcome(bool ExceptionEscaped, bool LambdaWasInvoked, bool FailureWasTracked);
 }
