@@ -208,6 +208,28 @@ namespace Bam.Test
             return this;
         }
 
+        /// <summary>
+        /// The entry point into test validation.  Calls the specified
+        /// actionToAssertResults passing it the Because object of the
+        /// current test case and the test result cast to TResult.  The
+        /// object under test remains available through Because.TheObjectUnderTest.
+        /// </summary>
+        /// <typeparam name="TResult">The type of the test result.</typeparam>
+        /// <param name="actionToAssertResults"></param>
+        /// <returns></returns>
+        public TestCase<T> ShouldPass<TResult>(Action<Because, TResult> actionToAssertResults)
+        {
+            try
+            {
+                actionToAssertResults(_because, _because.ResultAs<TResult>());
+            }
+            catch (Exception ex)
+            {
+                _because.ExceptionWasThrown(ex);
+            }
+            return this;
+        }
+
         public TestCaseResult<T> GetResult()
         {
             return new TestCaseResult<T>(this, _testCaseBecause);

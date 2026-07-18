@@ -6,7 +6,7 @@ Custom test framework for the Bam Framework providing fluent test case authoring
 
 bam.test is a self-contained test framework that does not rely on xUnit, NUnit, or MSTest. Instead, it provides its own test runner infrastructure built on top of bam.console's menu system. Tests are organized into classes adorned with `[UnitTestMenu]` and methods adorned with `[UnitTest]`, `[IntegrationTest]`, or `[SpecTest]`. The test runner is invoked via `BamConsoleContext.StaticMain` with command-line switches: `--ut` (unit tests), `--it` (integration tests), or `--spec` (specification tests).
 
-The core authoring API is the `When.A<T>()` fluent interface. A test case starts with `When.A<T>("description", (objectUnderTest) => ...)`, which creates a `TestCase<T>`. Accessing `.TheTest` (or `.It`) triggers execution. Assertions are made in `.ShouldPass(because => ...)` using the `Because` object, which tracks assertions via `ItsTrue()`, `ItsFalse()`, provides result access via `ResultAs<T>()` and `TheResult`, and reports success/failure via `SoBeHappy().UnlessItFailed()`.
+The core authoring API is the `When.A<T>()` fluent interface. A test case starts with `When.A<T>("description", (objectUnderTest) => ...)`, which creates a `TestCase<T>`. Accessing `.TheTest` (or `.It`) triggers execution. Assertions are made in `.ShouldPass(because => ...)` using the `Because` object, which tracks assertions via `ItsTrue()`, `ItsFalse()`, provides result access via `ResultAs<T>()` and `TheResult`, and reports success/failure via `SoBeHappy().UnlessItFailed()`. When the test returns a result, prefer the typed form `.ShouldPass<TResult>((because, result) => ...)`, which delivers the result to the assert lambda already cast to `TResult`.
 
 The framework also provides BDD-style specification tests through `SpecTestContainer`, which supports `Feature` / `Scenario` / `Given` / `And` / `When` / `Then` syntax. Test lifecycle hooks are available via `[BeforeUnitTests]`, `[AfterUnitTests]`, `[BeforeEachUnitTest]`, `[AfterEachUnitTest]`, and the `After.Setup(...)` fluent setup API. The `TestRunner<T>` base class manages test discovery, execution order, setup/teardown, and summary reporting.
 
@@ -15,7 +15,7 @@ The framework also provides BDD-style specification tests through `SpecTestConta
 | Class | Description |
 |---|---|
 | `When` | Static entry point for fluent test authoring. `When.A<T>(description, test)` creates a `TestCase<T>`. |
-| `TestCase<T>` | Represents a single test case. `.TheTest` / `.It` triggers execution. `.ShouldPass(...)` enters assertion phase. `.SoBeHappy()` finalizes. |
+| `TestCase<T>` | Represents a single test case. `.TheTest` / `.It` triggers execution. `.ShouldPass(...)` enters assertion phase (`.ShouldPass<TResult>((because, result) => ...)` for typed results). `.SoBeHappy()` finalizes. |
 | `Because` / `Because<T>` | Assertion context passed to `ShouldPass`. Provides `ItsTrue`, `ItsFalse`, `ResultAs<T>`, `TheResult`, `TheObjectUnderTest`, `TheTestCase`, `AdditionalInformation`. |
 | `TestCaseRegistry` | Per-test DI container holding the object under test and auxiliary registrations. |
 | `UnitTest` | Attribute marking a method as a unit test. Extends `TestAttribute` with `TestType.Unit`. |
@@ -73,6 +73,27 @@ public class MyTests : UnitTestMenuContainer
     }
 }
 ```
+
+### Typed result assertions
+When the test returns a value, `ShouldPass<TResult>` passes it to the assert lambda already cast to `TResult` — no manual `because.Result` cast. The object under test remains available via `because.TheObjectUnderTest`.
+```csharp
+[UnitTest]
+public void ShouldAddNumbersTyped()
+{
+    When.A<Calculator>("adds two numbers", (calc) =>
+    {
+        return calc.Add(2, 3);
+    })
+    .TheTest
+    .ShouldPass<int>((because, result) =>
+    {
+        because.ItsTrue("result is 5", result == 5);
+    })
+    .SoBeHappy()
+    .UnlessItFailed();
+}
+```
+For tests producing multiple values, return a `private sealed record <Test>Outcome(...)` from the test lambda and assert against its named properties.
 
 ### Test with setup and summary
 ```csharp
