@@ -25,7 +25,7 @@ The framework also provides BDD-style specification tests through `SpecTestConta
 | `UnitTestRunner` | Concrete runner for unit tests. |
 | `IntegrationTestRunner` | Concrete runner for integration tests. |
 | `TestMethod` / `UnitTestMethod` / `IntegrationTestMethod` | Wrappers around test `MethodInfo` with metadata. |
-| `TestRunnerSummary` | Tracks passed and failed tests for summary reporting. |
+| `TestRunnerSummary` | Tracks passed, failed, and skipped tests for summary reporting. |
 | `TestReporter` | Handles console output of test results. |
 | `ThisTest` | Entry point for `ThisTest.Should(summary).After.Setup(...).When.A<T>(...)` fluent chain with test case summaries. |
 | `ShouldContext` / `AfterContext` / `SetupContext` / `WhenContext` | Fluent context objects enabling the `ThisTest.Should(...).After.Setup(...).When.A<T>(...)` chain. |
@@ -33,6 +33,9 @@ The framework also provides BDD-style specification tests through `SpecTestConta
 | `SpecTestRunner` | Runner for specification tests. |
 | `Assertion` | Represents a single pass/fail assertion with success and failure messages. |
 | `FailedTest` | Records a failed test with its exception. |
+| `Skip` | Static runtime-skip entry points: `Skip.Because(reason)`, `Skip.When(condition, reason)`, `Skip.Unless(condition, reason)`. Thrown skips are reported as skipped, not passed or failed — for decisions only knowable at execution time (e.g. a required external tool is absent). Complements the static `[UnitTest(IgnoreBecause = "...")]` ignore. |
+| `SkipTestException` | Thrown by the `Skip` entry points; caught by `TestRunner<T>` which fires `TestSkipped` and records a `SkippedTest`. |
+| `SkippedTest` | Records a skipped test with the reason it was skipped. |
 
 ## Dependencies
 

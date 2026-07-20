@@ -37,6 +37,11 @@
         event EventHandler TestIgnored;
 
         /// <summary>
+        /// Raised when a test is skipped at runtime via the <see cref="Skip"/> entry points.
+        /// </summary>
+        event EventHandler TestSkipped;
+
+        /// <summary>
         /// Raised when an individual test finishes execution.
         /// </summary>
         event EventHandler TestFinished;

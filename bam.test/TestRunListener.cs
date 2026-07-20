@@ -12,6 +12,11 @@
             TestPassed(sender, e.CopyAs<TestEventArgs<TTestMethod>>());
         }
 
+        public void TestSkipped(object? sender, EventArgs e)
+        {
+            TestSkipped(sender, e.CopyAs<TestSkippedEventArgs>());
+        }
+
         public void TestsStarting(object? sender, EventArgs e)
         {
             TestsStarting(sender, e.CopyAs<TestEventArgs<TTestMethod>>());
@@ -36,6 +41,7 @@
         {
             runner.TestFailed += TestFailed;
             runner.TestPassed += TestPassed;
+            runner.TestSkipped += TestSkipped;
             runner.TestsStarting += TestsStarting;
             runner.TestStarting += TestStarting;
             runner.TestsFinished += TestsFinished;
@@ -44,6 +50,13 @@
         public string? Tag { get; set; }
         public abstract void TestFailed(object? sender, TestExceptionEventArgs args);
         public abstract void TestPassed(object? sender, TestEventArgs<TTestMethod> args);
+
+        /// <summary>
+        /// Called when a test is skipped at runtime via the <see cref="Skip"/> entry points. Override to observe skips; the default implementation does nothing.
+        /// </summary>
+        /// <param name="sender">The event source.</param>
+        /// <param name="args">The event data containing the skipped test and the reason.</param>
+        public virtual void TestSkipped(object? sender, TestSkippedEventArgs args) { }
         public virtual void TestsStarting(object? sender, TestEventArgs<TTestMethod> args) { }
         public virtual void TestStarting(object? sender, TestEventArgs<TTestMethod> args) { }
         public virtual void TestsFinished(object? sender, TestEventArgs<TTestMethod> args) { }

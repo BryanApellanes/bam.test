@@ -50,6 +50,7 @@ namespace Bam.Test
         public string Tag { get; set; } = null!;
 
         public event EventHandler TestIgnored = null!;
+        public event EventHandler TestSkipped = null!;
 
         public event EventHandler TestPassed = null!;
         public event EventHandler TestFailed = null!;
@@ -202,6 +203,10 @@ namespace Bam.Test
                 TestSummary.PassedTests.Add(test);
                 FireEvent(TestPassed, args);
             }
+            catch (Exception ex) when (ex.GetBaseException() is SkipTestException skipTestException)
+            {
+                FireTestSkipped(test, skipTestException);
+            }
             catch (ReflectionTypeLoadException rtle)
             {
                 FireTestFailed(test, rtle);
@@ -223,6 +228,12 @@ namespace Bam.Test
         {
             TestSummary.FailedTests.Add(new FailedTest { Test = test, Exception = ex });
             FireEvent(TestFailed, new TestExceptionEventArgs(test, ex));
+        }
+
+        protected void FireTestSkipped(TestMethod test, SkipTestException skipTestException)
+        {
+            TestSummary.SkippedTests.Add(new SkippedTest { Test = test, Reason = skipTestException.Reason });
+            FireEvent(TestSkipped, new TestSkippedEventArgs(test, skipTestException.Reason));
         }
 
         protected TestEventArgs<TTestMethod> FireTestStarting(TestMethod test)

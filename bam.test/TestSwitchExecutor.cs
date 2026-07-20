@@ -59,7 +59,7 @@ namespace Bam.Test
 
         private static void LogSummary(ILogger logger, TestRunnerSummary summary)
         {
-            logger.Info("Test Summary: {0} passed, {1} failed", summary.PassedTests.Count, summary.FailedTests.Count);
+            logger.Info("Test Summary: {0} passed, {1} failed, {2} skipped", summary.PassedTests.Count, summary.FailedTests.Count, summary.SkippedTests.Count);
         }
     }
 
