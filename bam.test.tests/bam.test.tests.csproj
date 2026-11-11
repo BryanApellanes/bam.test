@@ -5,6 +5,8 @@
         <TargetFramework>net10.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <!-- A test body that returns null must compile without CS8603 (bam.test#8); as an error here, dropping the object? annotation from the test delegates breaks this build. -->
+        <WarningsAsErrors>$(WarningsAsErrors);CS8603</WarningsAsErrors>
     </PropertyGroup>
 
     <ItemGroup>

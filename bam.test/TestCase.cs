@@ -61,7 +61,7 @@ namespace Bam.Test
         /// test.</param>
         /// <param name="testDescription">The description of the current test.</param>
         /// <param name="outputAction">The delegate containing the test which returns a value
-        /// that can be validated during the verification phase of the test.</param>
+        /// that can be validated during the verification phase of the test; the value may be null.</param>
         public TestCase(TestCaseRegistry testCaseRegistry, string testDescription, Func<T, object?> outputAction)
             : this(testCaseRegistry, testDescription)
         {
@@ -130,7 +130,8 @@ namespace Bam.Test
 
                             if (_outputAction != null)
                             {
-                                _because.Result = _outputAction(objectUnderTest)!; // a null result is legitimate; Result is declared non-null for the suites that read it untyped
+                                // A null result is legitimate; Result is declared non-null for the suites that read it untyped.
+                                _because.Result = _outputAction(objectUnderTest)!;
                             }
 
                             if (_altOutputAction != null)

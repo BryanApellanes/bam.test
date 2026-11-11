@@ -32,7 +32,7 @@ namespace Bam.Test
         /// <typeparam name="T"></typeparam>
         /// <param name="testCaseDescription"></param>
         /// <param name="objectUnderTest"></param>
-        /// <param name="test"></param>
+        /// <param name="test">The test body; the value it returns, which may be null, is the result the assertions read.</param>
         /// <returns></returns>
         public static TestCase<T> A<T>(string testCaseDescription, T objectUnderTest, Func<T, object?> test)
         {
