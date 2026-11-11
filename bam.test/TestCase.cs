@@ -18,8 +18,8 @@ namespace Bam.Test
         readonly Action<T> _testMethod = null!;
         readonly Action<T, TestCaseRegistry> _altTestMethod = null!;
 
-        readonly Func<T, object> _outputAction = null!;
-        readonly Func<T, TestCaseRegistry, object> _altOutputAction = null!;
+        readonly Func<T, object?> _outputAction = null!;
+        readonly Func<T, TestCaseRegistry, object?> _altOutputAction = null!;
 
         internal TestCase(TestCaseRegistry testCaseRegistry, string testDescription)
         {
@@ -61,14 +61,14 @@ namespace Bam.Test
         /// test.</param>
         /// <param name="testDescription">The description of the current test.</param>
         /// <param name="outputAction">The delegate containing the test which returns a value
-        /// that can be validated during the verification phase of the test.</param>
-        public TestCase(TestCaseRegistry testCaseRegistry, string testDescription, Func<T, object> outputAction)
+        /// that can be validated during the verification phase of the test; the value may be null.</param>
+        public TestCase(TestCaseRegistry testCaseRegistry, string testDescription, Func<T, object?> outputAction)
             : this(testCaseRegistry, testDescription)
         {
             _outputAction = outputAction;
         }
         
-        public TestCase(TestCaseRegistry testCaseRegistry, string testDescription, Func<T, TestCaseRegistry, object> altOutputAction)
+        public TestCase(TestCaseRegistry testCaseRegistry, string testDescription, Func<T, TestCaseRegistry, object?> altOutputAction)
             : this(testCaseRegistry, testDescription)
         {
             _altOutputAction = altOutputAction;
@@ -130,12 +130,13 @@ namespace Bam.Test
 
                             if (_outputAction != null)
                             {
-                                _because.Result = _outputAction(objectUnderTest);
+                                // A null result is legitimate; Result is declared non-null for the suites that read it untyped.
+                                _because.Result = _outputAction(objectUnderTest)!;
                             }
 
                             if (_altOutputAction != null)
                             {
-                                _because.Result = _altOutputAction(objectUnderTest, _testCaseRegistry);
+                                _because.Result = _altOutputAction(objectUnderTest, _testCaseRegistry)!;
                             }
                             _testCaseBecause = new Because<T>(_because, this);
                             _testCaseRegistry.ObjectUnderTest = objectUnderTest;

@@ -13,7 +13,7 @@ public class WhenContext
         set;
     }
     
-    public TestCase<T> A<T>(string testCaseDescription, Func<T, object> test) where T : new()
+    public TestCase<T> A<T>(string testCaseDescription, Func<T, object?> test) where T : new()
     {
         TestCaseRegistry testCaseRegistry = new TestCaseRegistry();
         testCaseRegistry.Set(new T());
