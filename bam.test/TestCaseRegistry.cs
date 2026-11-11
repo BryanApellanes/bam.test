@@ -53,7 +53,7 @@ namespace Bam.Test
         /// <param name="actionDescription">A description of the action being tested.</param>
         /// <param name="test">The function to execute, returning a result value.</param>
         /// <returns>A new <see cref="TestCase{T}"/>.</returns>
-        public TestCase<T> When<T>(string actionDescription, Func<T, TestCaseRegistry, object> test)
+        public TestCase<T> When<T>(string actionDescription, Func<T, TestCaseRegistry, object?> test)
         {
             return new TestCase<T>(this, GetActionDescription<T>(actionDescription), test);
         }
@@ -113,7 +113,7 @@ namespace Bam.Test
         /// <param name="test"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public TestCase<T> When<T>(string testDescription, Func<T, object> test)
+        public TestCase<T> When<T>(string testDescription, Func<T, object?> test)
         {
             return new TestCase<T>(this, testDescription, test);
         }
@@ -147,7 +147,7 @@ namespace Bam.Test
         /// parameter so the developer can interact with it. Must return a value.</param>
         /// <returns></returns>
         [Obsolete("This method is obsolete and will be removed in a future version. Use When<T> instead.")]
-        public TestCase<T> WhenA<T>(string actionDescription, Func<T, object> test)
+        public TestCase<T> WhenA<T>(string actionDescription, Func<T, object?> test)
         {
             return new TestCase<T>(this, GetActionDescription<T>(actionDescription), test);
         }

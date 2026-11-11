@@ -168,6 +168,47 @@ public class TestCaseShould : UnitTestMenuContainer
         .UnlessItFailed();
     }
 
+    [UnitTest]
+    public void PassANullResultToTheTypedAssertion()
+    {
+        When.A<TestData>("returns null from a test body given an instance",
+            new TestData(),
+            (testData) => null)
+        .TheTest
+        .ShouldPass<string?>((because, result) =>
+        {
+            because.ItsTrue("the null result reaches the typed assertion", result == null);
+        })
+        .SoBeHappy()
+        .UnlessItFailed();
+    }
+
+    [UnitTest]
+    public void PassANullResultFromACaughtFailurePattern()
+    {
+        When.A<TestData>("returns the caught exception, or null when nothing was thrown",
+            () => new TestData { Name = "fine" },
+            (testData) =>
+            {
+                try
+                {
+                    ArgumentNullException.ThrowIfNull(testData.Name);
+                    return null;
+                }
+                catch (ArgumentNullException failure)
+                {
+                    return failure;
+                }
+            })
+        .TheTest
+        .ShouldPass<ArgumentNullException?>((because, _, failure) =>
+        {
+            because.ItsTrue("nothing was thrown, so the result is null", failure == null);
+        })
+        .SoBeHappy()
+        .UnlessItFailed();
+    }
+
     private sealed record TypedShouldPassExceptionOutcome(bool ExceptionEscaped, bool FailureWasTracked);
 
     private sealed record TypedShouldPassMismatchOutcome(bool ExceptionEscaped, bool LambdaWasInvoked, bool FailureWasTracked);

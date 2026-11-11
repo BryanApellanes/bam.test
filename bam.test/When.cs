@@ -16,12 +16,12 @@ namespace Bam.Test
         /// <param name="testCaseDescription"></param>
         /// <param name="test"></param>
         /// <returns></returns>
-        public static TestCase<T> A<T>(string testCaseDescription, Func<T, object> test) where T : new()
+        public static TestCase<T> A<T>(string testCaseDescription, Func<T, object?> test) where T : new()
         {
             return A(testCaseDescription, new T(), test);
         }
         
-        public static TestCase<T> A<T>(string testCaseDescription, Func<T> instantiator, Func<T, object> test)
+        public static TestCase<T> A<T>(string testCaseDescription, Func<T> instantiator, Func<T, object?> test)
         {
             return A(testCaseDescription, instantiator(), test);
         }
@@ -34,7 +34,7 @@ namespace Bam.Test
         /// <param name="objectUnderTest"></param>
         /// <param name="test"></param>
         /// <returns></returns>
-        public static TestCase<T> A<T>(string testCaseDescription, T objectUnderTest, Func<T, object> test)
+        public static TestCase<T> A<T>(string testCaseDescription, T objectUnderTest, Func<T, object?> test)
         {
             TestCaseRegistry testCaseRegistry = new TestCaseRegistry();
             testCaseRegistry.Set(objectUnderTest);
