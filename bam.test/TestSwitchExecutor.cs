@@ -65,6 +65,11 @@ namespace Bam.Test
 
     internal static class TestModuleInitializer
     {
+        // Deliberate use in a library: referencing bam.test is what registers the in-process test
+        // executor (BamConsoleContext warns "ensure bam.test is referenced" when none is found), so
+        // test projects do not each have to wire it up in Program.cs.
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2255:The 'ModuleInitializer' attribute should not be used in libraries",
+            Justification = "Self-registration on load is the contract bam.console relies on; see BamConsoleContext's ITestSwitchExecutor lookup.")]
         [ModuleInitializer]
         internal static void Initialize()
         {
