@@ -8,8 +8,25 @@ using Bam.Test.Unit;
 
 namespace Bam.Test
 {
+    /// <summary>
+    /// Runs the test switches (<c>--ut</c>, <c>--spec</c>, <c>--it</c>) for a test executable and ends the process
+    /// with a non-zero exit code when any executed test failed, so a plain <c>dotnet run -- --ut</c> is a valid CI gate.
+    /// </summary>
     public class TestSwitchExecutor : ITestSwitchExecutor
     {
+        /// <summary>
+        /// The exit code a test executable ends with when at least one executed test failed.
+        /// </summary>
+        public const int FailedTestsExitCode = 1;
+
+        /// <summary>
+        /// Executes the test switches in <paramref name="arguments"/> against <paramref name="assembly"/>. When any
+        /// executed test fails, the process exits with <see cref="FailedTestsExitCode"/> after the summaries are logged.
+        /// </summary>
+        /// <param name="assembly">The assembly containing the tests.</param>
+        /// <param name="logger">The logger the summaries are written to.</param>
+        /// <param name="arguments">The parsed command line arguments.</param>
+        /// <returns>True if any test switch was executed; otherwise false. A run with a failed test never returns.</returns>
         public bool ExecuteTestSwitches(Assembly assembly, ILogger logger, IParsedArguments arguments)
         {
             bool hasTestSwitch = arguments.Contains("ut") || arguments.Contains("spec") || arguments.Contains("it");
@@ -26,12 +43,14 @@ namespace Bam.Test
             }
 
             bool executed = false;
+            List<TestRunnerSummary> summaries = new List<TestRunnerSummary>();
 
             if (arguments.Contains("ut"))
             {
                 var runner = new UnitTestRunner(assembly, logger);
                 runner.RunAllTests();
                 LogSummary(logger, runner.TestSummary);
+                summaries.Add(runner.TestSummary);
                 executed = true;
             }
 
@@ -40,6 +59,7 @@ namespace Bam.Test
                 var runner = new SpecTestRunner(assembly, logger);
                 runner.RunAllTests();
                 LogSummary(logger, runner.TestSummary);
+                summaries.Add(runner.TestSummary);
                 executed = true;
             }
 
@@ -51,10 +71,36 @@ namespace Bam.Test
                 else
                     runner.RunAllTests();
                 LogSummary(logger, runner.TestSummary);
+                summaries.Add(runner.TestSummary);
                 executed = true;
             }
 
+            int runExitCode = ExitCodeFor(summaries);
+            if (runExitCode != 0)
+            {
+                BamConsoleContext.Exit(runExitCode);
+            }
+
             return executed;
+        }
+
+        /// <summary>
+        /// Gets the exit code for a set of test run summaries: <see cref="FailedTestsExitCode"/> when any summary records
+        /// a failed test, otherwise 0. Skipped tests don't fail a run, and no summaries at all is 0.
+        /// </summary>
+        /// <param name="summaries">The summaries of the test runs that executed.</param>
+        /// <returns>The process exit code for the runs.</returns>
+        public static int ExitCodeFor(IEnumerable<TestRunnerSummary> summaries)
+        {
+            foreach (TestRunnerSummary summary in summaries)
+            {
+                if (summary.FailedTests.Count > 0)
+                {
+                    return FailedTestsExitCode;
+                }
+            }
+
+            return 0;
         }
 
         private static void LogSummary(ILogger logger, TestRunnerSummary summary)
