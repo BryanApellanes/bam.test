@@ -45,22 +45,27 @@ namespace Bam.Test
             bool executed = false;
             List<TestRunnerSummary> summaries = new List<TestRunnerSummary>();
 
+            // Every switch goes through Record, so the "Test Summary" line bamtest parses and the summary the exit
+            // code is computed from can't drift apart for one switch.
+            void Record(TestRunnerSummary summary)
+            {
+                LogSummary(logger, summary);
+                summaries.Add(summary);
+                executed = true;
+            }
+
             if (arguments.Contains("ut"))
             {
                 var runner = new UnitTestRunner(assembly, logger);
                 runner.RunAllTests();
-                LogSummary(logger, runner.TestSummary);
-                summaries.Add(runner.TestSummary);
-                executed = true;
+                Record(runner.TestSummary);
             }
 
             if (arguments.Contains("spec"))
             {
                 var runner = new SpecTestRunner(assembly, logger);
                 runner.RunAllTests();
-                LogSummary(logger, runner.TestSummary);
-                summaries.Add(runner.TestSummary);
-                executed = true;
+                Record(runner.TestSummary);
             }
 
             if (arguments.Contains("it", out string? itGroup))
@@ -70,9 +75,7 @@ namespace Bam.Test
                     runner.RunTestGroup(itGroup);
                 else
                     runner.RunAllTests();
-                LogSummary(logger, runner.TestSummary);
-                summaries.Add(runner.TestSummary);
-                executed = true;
+                Record(runner.TestSummary);
             }
 
             int runExitCode = ExitCodeFor(summaries);
